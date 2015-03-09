@@ -16,16 +16,16 @@ void TestEnt::UpdateLocal(DWORD_PTR dwPointer) {
 
 	m_dwPointer = dwPointer;
 
-	m_fX = process->Read<long>(m_dwPointer + 0x200);
-	m_fY = process->Read<long>(m_dwPointer + 0x204);
-	m_fZ = process->Read<long>(m_dwPointer + 0x208);
-	m_fD = process->Read<long>(m_dwPointer + 0x230);
+	m_fX = process->Read<float>(m_dwPointer + 0x200);
+	m_fY = process->Read<float>(m_dwPointer + 0x204);
+	m_fZ = process->Read<float>(m_dwPointer + 0x208);
+	m_fD = process->Read<float>(m_dwPointer + 0x230);
 
 
 	long posOffset = process->Read<long>(m_dwPointer + 0x190);
-	m_fX = process->Read<long>(posOffset + 0x110);
-	m_fY = process->Read<long>(posOffset + 0x114);
-	m_fZ = process->Read<long>(posOffset + 0x118);
+	m_fX = process->Read<float>(posOffset + 0x110);
+	m_fY = process->Read<float>(posOffset + 0x114);
+	m_fZ = process->Read<float>(posOffset + 0x118);
 
 	m_vLocation = Vector3(m_fX, m_fY, m_fZ);
 }
@@ -67,20 +67,12 @@ void TestEnt::SetName() {
 	process->Read(nameEntry, m_pName, process->Read<int>(m_dwPointer + 0x470));
 }
 
-bool TestEnt::IsValid() {
-	//if (!GetPointer()) {
-	//	return false;
-	//}
+void TestEnt::SetDistanceFrom(Vector3 vec) {
+	float distX = m_vLocation.x - vec.x;
+	float distY = m_vLocation.z - vec.z;
+	float distZ = m_vLocation.y - vec.y;
 
-	//if (GetId() == 0) {
-	//	return false;
-	//}
-
-	if (GetLocation().IsZero()) {
-		return false;
-	}
-
-	return true;
+	m_iDist = int(sqrt(((distX * distX) + (distY * distY)) + (distZ * distZ)) + 0.5);
 }
 
 DWORD_PTR TestEnt::GetPointer() {

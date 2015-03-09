@@ -18,14 +18,12 @@ public:
 	void		UpdateNPC();					  //initialize enemy,zombie,animal
 	void		UpdateLoot();					  //initialize for all else (guns,ammo,loot,parts,food,...)
 
+	void		SetDistanceFrom(Vector3 vec);
+
 	DWORD_PTR	GetPointer();
 	Vector3		GetLocation();
 	const char*	GetName();
 	int			GetId();
-
-	bool		IsValid();	//ensure type is not 0
-
-
 
 private:
 	void		Clear(); //clear alls
@@ -43,6 +41,7 @@ private:
 	float		m_fZ;
 public:
 	float		m_fD;
+	int			m_iDist;
 
 
 };

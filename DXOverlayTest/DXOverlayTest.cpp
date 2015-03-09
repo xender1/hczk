@@ -22,6 +22,8 @@ std::vector<Entity> EntityList;
 void DrawTowns();
 void DrawPlayerLocation(TestEnt LocalEntity);
 
+void DrawEntityLocation(TestEnt ent, Vector3 vBot);
+
 void H1Z1ProcessOverlay() {
 
 	gRenderer->DrawRect(100, 100, 30, 60, Color::Red());
@@ -38,34 +40,20 @@ void H1Z1ProcessOverlay() {
 	LocalEntity.UpdateLocal(dwFirstEntity);
 	DrawPlayerLocation(LocalEntity);
 
-	/* Entity For Loop
-	*
-	*/
+	/* Entity For Loop */
 	DWORD_PTR dwEntity;
 	dwEntity = process->Read<DWORD_PTR>(dwFirstEntity + 0x400);
 	for (int i = 1; i < entityCount; i++) {
 		TestEnt ent; 
 		ent.UpdateId(dwEntity); // + sets entity id
-		//if (ent.IsValid()) {
-		float EntityX = 0.0f; float EntityY = 0.0f; float EntityZ = 0.0f;
-		int EntityId = process->Read<int>(dwEntity + 0x5B0);
-
-
 
 		if (ent.GetId() != 0) {
 			cntEntProcessed++;
 
 			ent.SetName();
 
-		//	char ename[32];
-		//	memset(ename, NULL, sizeof(char[32]));
-
-	//		DWORD_PTR nameEntry = process->Read<DWORD_PTR>(dwEntity + 0x468);
-
-		//	process->Read(nameEntry, ename, process->Read<int>(dwEntity + 0x470));
-
-			Vector3 vBot; Vector3 vFeet;
-			switch (EntityId)
+			Vector3 vBot; Vector3 vFeet; //for world to screen
+			switch (ent.GetId())
 			{
 			case 0x04/*Player*/:
 			case 0x0C/*Zombie*/:
@@ -76,54 +64,30 @@ void H1Z1ProcessOverlay() {
 			case 0x5b/*Zombie*/:
 				if (process->Read<float>(dwEntity + 0x1CC) == 1.0f)
 				{
-					//	Boolean EntityAlive = Convert.ToBoolean(this.GameMemory.ReadByte(entityEntry + 0x136C));
-					EntityX = process->Read<float>(dwEntity + 0x1C0);
-					EntityY = process->Read<float>(dwEntity + 0x1C4);
-					EntityZ = process->Read<float>(dwEntity + 0x1C8);
+					ent.UpdateNPC();
+					vFeet = ent.GetLocation();
 
-					if (EntityX == 0)
-					{
-						EntityX = process->Read<float>(dwEntity + 0x1360);
-						EntityY = process->Read<float>(dwEntity + 0x1364);
-						EntityZ = process->Read<float>(dwEntity + 0x1368);
-					}
-
-					vFeet = Vector3(EntityX, EntityY, EntityZ);
-					//Vector3 vBot;
 					if (g_pEngine->WorldToScreen(vFeet, vBot)) {
-						//std::cout << " drawX: " << vTop.x << " , drawY: " << vTop.y + h << std::endl;
 
-						double distX = (EntityX / 100) - 1; //(m_x / 100);
-						double distY = EntityZ / 100 - 1;// m_z / 100;
-						double distZ = EntityY / 100 - 1;// m_y / 100;
+						ent.SetDistanceFrom(LocalEntity.GetLocation());
 
-						//std::cout << distX << ", " << distY << ", " << distZ << 
-						//	" . player_info: " << m_x << ", " << m_y << m_z << std::endl;
-
-						double a = abs(sqrt(((distX * distX) + (distY * distY)) + (distZ * distZ)));
-
-						char fuckme[60]; memset(fuckme, NULL, sizeof(char[60]));
-						sprintf(fuckme, "%s [%i m]", ent.GetName(), round(a));
+						char fuckme[120]; memset(fuckme, NULL, sizeof(char[120]));
+						sprintf(fuckme, "%s [%i m]", ent.GetName(), ent.m_iDist);
 						
-						gRenderer->DrawString(vBot.x - 5, vBot.y + 25, Color::Red(), fuckme);
-						
+						gRenderer->DrawString(vBot.x - 27, vBot.y + 22, Color::Red(), fuckme);
+						//DrawEntityLocation(ent, vBot);//debug function
 					}
 
 				}
 				break;
 
 			case 0x2E/*Loot*/:
-				EntityX = process->Read<float>(dwEntity + 0x13E0L);
-				EntityY = process->Read<float>(dwEntity + 0x13E4L);
-				EntityZ = process->Read<float>(dwEntity + 0x13E8L);
+				ent.UpdateLoot();
+				vFeet = ent.GetLocation();
 
-				vFeet = Vector3(EntityX, EntityY, EntityZ);
-				//Vector3 vBot;
 				if (g_pEngine->WorldToScreen(vFeet, vBot)) {
-					//std::cout << " drawX: " << vTop.x << " , drawY: " << vTop.y + h << std::endl;
-					gRenderer->DrawString(vBot.x - 5, vBot.y + 25, Color::Yellow(), ent.GetName());
+					gRenderer->DrawString(vBot.x - 27, vBot.y + 22, Color::Yellow(), ent.GetName());
 				}
-
 				break;
 
 			case 0x2F/*Furnace*/:
@@ -131,80 +95,54 @@ void H1Z1ProcessOverlay() {
 			case 0x35/*Animal Trap*/:
 			case 0x36/*Dew Collector*/:
 			case 0x53/*Barbeque*/:
-				/*EntityX = process->Read<float>(dwEntity + 0x13E0L);
-				EntityY = process->Read<float>(dwEntity + 0x13E4L);
-				EntityZ = process->Read<float>(dwEntity + 0x13E8L);
-				vFeet = Vector3(EntityX, EntityY, EntityZ);
-				//		Vector3 vBot;
-				if (g_pEngine->WorldToScreen(vFeet, vBot)) {
-					//std::cout << " drawX: " << vTop.x << " , drawY: " << vTop.y + h << std::endl;
-					gRenderer->DrawString(vBot.x + 225, vBot.y + 150, Color::Green(), ename);
-				}*/
 				break;
 
 			case 0x1B/*Campfire*/:
 			case 0x6D/*Stash*/:
 			case 0x9C/*Land Mine*/:
-				EntityX = process->Read<float>(dwEntity + 0x13E0L);
-				EntityY = process->Read<float>(dwEntity + 0x13E4L);
-				EntityZ = process->Read<float>(dwEntity + 0x13E8L);
-				vFeet = Vector3(EntityX, EntityY, EntityZ);
-				//	Vector3 vBot;
+				ent.UpdateLoot();
+				vFeet = ent.GetLocation();
 				if (g_pEngine->WorldToScreen(vFeet, vBot)) {
-					//std::cout << " drawX: " << vTop.x << " , drawY: " << vTop.y + h << std::endl;
-					gRenderer->DrawString(vBot.x + 225, vBot.y + 150, Color::Red(), ent.GetName());
+					gRenderer->DrawString(vBot.x - 27, vBot.y + 22, Color::Red(), ent.GetName());
 				}
 				break;
 
 			case 0x15/*Ammo*/:
-				EntityX = process->Read<float>(dwEntity + 0x13E0L);
-				EntityY = process->Read<float>(dwEntity + 0x13E4L);
-				EntityZ = process->Read<float>(dwEntity + 0x13E8L);
-				vFeet = Vector3(EntityX, EntityY, EntityZ);
-				//		Vector3 vBot;
-				if (g_pEngine->WorldToScreen(vFeet, vBot)) {
-					//std::cout << " drawX: " << vTop.x << " , drawY: " << vTop.y + h << std::endl;
-					gRenderer->DrawString(vBot.x + 225, vBot.y + 150, Color::Pink(), ent.GetName());
-				}
+				ent.UpdateLoot();
+				vFeet = ent.GetLocation();
 
+				if (g_pEngine->WorldToScreen(vFeet, vBot)) {
+					gRenderer->DrawString(vBot.x - 27, vBot.y + 22, Color::Pink(), ent.GetName());
+				}
 				break;
 
 			case 0x34/*Weapons*/:
-				EntityX = process->Read<float>(dwEntity + 0x13E0L);
-				EntityY = process->Read<float>(dwEntity + 0x13E4L);
-				EntityZ = process->Read<float>(dwEntity + 0x13E8L);
-				vFeet = Vector3(EntityX, EntityY, EntityZ);
+				ent.UpdateLoot();
+
+				vFeet = ent.GetLocation();
 				//		Vector3 vBot;
 				if (g_pEngine->WorldToScreen(vFeet, vBot)) {
-					//std::cout << " drawX: " << vTop.x << " , drawY: " << vTop.y + h << std::endl;
-					gRenderer->DrawString(vBot.x + 225, vBot.y + 150, Color::Pink(), ent.GetName());
+					gRenderer->DrawString(vBot.x - 27, vBot.y + 22, Color::Pink(), ent.GetName());
 				}
-
 				break;
 
 			case 0x11/*OffRoad*/:
 			case 0x72/*Pickup*/:
 			case 0x76/*PoliceCar*/:
-				EntityX = process->Read<float>(dwEntity + 0x13E0L);
-				EntityY = process->Read<float>(dwEntity + 0x13E4L);
-				EntityZ = process->Read<float>(dwEntity + 0x13E8L);
-				vFeet = Vector3(EntityX, EntityY, EntityZ);
-				//	Vector3 vBot;
+				ent.UpdateLoot();
+				vFeet = ent.GetLocation();
+
 				if (g_pEngine->WorldToScreen(vFeet, vBot)) {
-					//std::cout << " drawX: " << vTop.x << " , drawY: " << vTop.y + h << std::endl;
-					gRenderer->DrawString(vBot.x + 225, vBot.y + 150, Color::Blue(), ent.GetName());
+					gRenderer->DrawString(vBot.x - 27, vBot.y + 22, Color::Blue(), ent.GetName());
 				}
 				break;
 
 			case 0x2C/* Any Car Part (Battary, Turbo, Sparkplugs)*/:
-				EntityX = process->Read<float>(dwEntity + 0x13E0L);
-				EntityY = process->Read<float>(dwEntity + 0x13E4L);
-				EntityZ = process->Read<float>(dwEntity + 0x13E8L);
-				vFeet = Vector3(EntityX, EntityY, EntityZ);
-				//	Vector3 vBot;
+				ent.UpdateLoot();
+				vFeet = ent.GetLocation();
+
 				if (g_pEngine->WorldToScreen(vFeet, vBot)) {
-					//std::cout << " drawX: " << vTop.x << " , drawY: " << vTop.y + h << std::endl;
-					gRenderer->DrawString(vBot.x + 225, vBot.y + 150, Color::White(), ent.GetName());
+					gRenderer->DrawString(vBot.x - 27, vBot.y + 22, Color::White(), ent.GetName());
 				}
 				break;
 
@@ -271,16 +209,12 @@ void H1Z1ProcessOverlay() {
 
 				// UNKNOWN ITEMS //
 			default:
-				EntityX = process->Read<float>(dwEntity + 0x13E0L);
-				EntityY = process->Read<float>(dwEntity + 0x13E4L);
-				EntityZ = process->Read<float>(dwEntity + 0x13E8L);
-				vFeet = Vector3(EntityX, EntityY, EntityZ);
-				//	Vector3 vBot;
-				if (g_pEngine->WorldToScreen(vFeet, vBot)) {
-					//std::cout << " drawX: " << vTop.x << " , drawY: " << vTop.y + h << std::endl;
-					gRenderer->DrawString(vBot.x + 225, vBot.y + 150, Color::Cyan(), ent.GetName());
-				}
+				ent.UpdateLoot();
+				vFeet = ent.GetLocation();
 
+				if (g_pEngine->WorldToScreen(vFeet, vBot)) {
+					gRenderer->DrawString(vBot.x - 27, vBot.y + 22, Color::Cyan(), ent.GetName());
+				}
 				break;
 			}
 
@@ -301,19 +235,17 @@ void DrawTowns() {
 	Vector3 rBot;
 
 	if (g_pEngine->WorldToScreen(pValleyVect, pValleyBot)) {
-
 		gRenderer->DrawString(pValleyBot.x, pValleyBot.y - 10, Color::Black(), "Pleasant Valley");
 	}
 	if (g_pEngine->WorldToScreen(cranVect, cBot)) {
-
 		gRenderer->DrawString(cBot.x, cBot.y - 10, Color::Black(), "Cranberry");
 	}
 	if (g_pEngine->WorldToScreen(ranchVect, rBot)) {
-
 		gRenderer->DrawString(rBot.x, rBot.y - 10, Color::Black(), "Ranchito");
 	}
 }
 
+// Terrible...fix
 void DrawPlayerLocation(TestEnt LocalEntity) {
 	std::string s = std::to_string(LocalEntity.m_fD);
 	char const *retChar = s.c_str();  //use char const* as target type
@@ -336,6 +268,20 @@ void DrawPlayerLocation(TestEnt LocalEntity) {
 	char const *retChar3 = s3.c_str();  //use char const* as target type
 	gRenderer->DrawString(50, size[1] - 340, Color::Green(), "z: ");
 	gRenderer->DrawString(90, size[1] - 340, Color::Green(), retChar3);
+}
+
+void DrawEntityLocation(TestEnt ent, Vector3 vBot) {
+	std::string s1 = std::to_string(ent.GetLocation().x);
+	char const* retChar1 = s1.c_str();  //use char const* as target type
+	gRenderer->DrawString(vBot.x + 10, vBot.y - 50, Color::Green(), retChar1);
+
+	std::string s12 = std::to_string(ent.GetLocation().y);
+	char const* retChar12 = s12.c_str();  //use char const* as target type
+	gRenderer->DrawString(vBot.x + 10, vBot.y - 35, Color::Green(), retChar12);
+
+	std::string s13 = std::to_string(ent.GetLocation().z);
+	char const* retChar13 = s13.c_str();  //use char const* as target type
+	gRenderer->DrawString(vBot.x + 10, vBot.y - 20, Color::Green(), retChar13);
 }
 
 void OnFrame() {
