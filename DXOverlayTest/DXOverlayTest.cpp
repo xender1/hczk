@@ -15,12 +15,15 @@
 Overlay* gOverlay = new Overlay();
 Renderer* gRenderer = new Renderer();
 
+int *size = gOverlay->getSize();
+
 std::vector<Entity> EntityList;
 
 void DrawTowns();
+void DrawPlayerLocation(TestEnt LocalEntity);
 
 void H1Z1ProcessOverlay() {
-	//gRenderer->DrawString(loc, 180, Color::Blue(), "such wow");
+
 	gRenderer->DrawRect(100, 100, 30, 60, Color::Red());
 
 	//Get Base Pointers to H1Z1
@@ -31,48 +34,35 @@ void H1Z1ProcessOverlay() {
 	int cntEntProcessed = 0;
 
 	/* PLayer Locations and Drawing Player Locations */
-	Entity LocalEntity;
-	//LocalEntity.UpdateLocal(dwFirstEntity);
-
-	float m_x = process->Read<long>(dwFirstEntity + 0x200);
-	float m_y = process->Read<long>(dwFirstEntity + 0x204);
-	float m_z = process->Read<long>(dwFirstEntity + 0x208);
-	float m_d = process->Read<long>(dwFirstEntity + 0x230);
-
-
-	long posOffset = process->Read<long>(dwFirstEntity + 0x190);
-	m_x = process->Read<long>(posOffset + 0x110);
-	m_y = process->Read<long>(posOffset + 0x114);
-	m_z = process->Read<long>(posOffset + 0x118);
-
-	gRenderer->DrawString(50, 100, Color::Green(), "Direction: ");
-	gRenderer->DrawString(300, 100, Color::Green(), LocalEntity.Stringingify(m_d));
-	gRenderer->DrawString(800, 800, Color::Cyan(), LocalEntity.DrawLocalData());
-
+	TestEnt LocalEntity;
+	LocalEntity.UpdateLocal(dwFirstEntity);
+	DrawPlayerLocation(LocalEntity);
 
 	/* Entity For Loop
-	*
 	*
 	*/
 	DWORD_PTR dwEntity;
 	dwEntity = process->Read<DWORD_PTR>(dwFirstEntity + 0x400);
 	for (int i = 1; i < entityCount; i++) {
-		//Entity ent(dwEntity); // + sets entity id
+		TestEnt ent; 
+		ent.UpdateId(dwEntity); // + sets entity id
 		//if (ent.IsValid()) {
 		float EntityX = 0.0f; float EntityY = 0.0f; float EntityZ = 0.0f;
 		int EntityId = process->Read<int>(dwEntity + 0x5B0);
 
 
 
-		if (EntityId != 0) {
+		if (ent.GetId() != 0) {
 			cntEntProcessed++;
 
-			char ename[32];
-			memset(ename, NULL, sizeof(char[32]));
+			ent.SetName();
 
-			DWORD_PTR nameEntry = process->Read<DWORD_PTR>(dwEntity + 0x468);
+		//	char ename[32];
+		//	memset(ename, NULL, sizeof(char[32]));
 
-			process->Read(nameEntry, ename, process->Read<int>(dwEntity + 0x470));
+	//		DWORD_PTR nameEntry = process->Read<DWORD_PTR>(dwEntity + 0x468);
+
+		//	process->Read(nameEntry, ename, process->Read<int>(dwEntity + 0x470));
 
 			Vector3 vBot; Vector3 vFeet;
 			switch (EntityId)
@@ -103,19 +93,19 @@ void H1Z1ProcessOverlay() {
 					if (g_pEngine->WorldToScreen(vFeet, vBot)) {
 						//std::cout << " drawX: " << vTop.x << " , drawY: " << vTop.y + h << std::endl;
 
-						double distX = (EntityX - m_x);
-						double distY = EntityZ - m_z;
-						double distZ = EntityY - m_y; 
+						double distX = (EntityX / 100) - 1; //(m_x / 100);
+						double distY = EntityZ / 100 - 1;// m_z / 100;
+						double distZ = EntityY / 100 - 1;// m_y / 100;
 
 						//std::cout << distX << ", " << distY << ", " << distZ << 
 						//	" . player_info: " << m_x << ", " << m_y << m_z << std::endl;
 
-						double a = sqrt(((distX * distX) + (distY * distY)) + (distZ * distZ));
+						double a = abs(sqrt(((distX * distX) + (distY * distY)) + (distZ * distZ)));
 
 						char fuckme[60]; memset(fuckme, NULL, sizeof(char[60]));
-						sprintf(fuckme, "%s [%d m]", ename, round(a));
+						sprintf(fuckme, "%s [%i m]", ent.GetName(), round(a));
 						
-						gRenderer->DrawString(vBot.x + 175, vBot.y + 100, Color::Red(), fuckme);
+						gRenderer->DrawString(vBot.x - 5, vBot.y + 25, Color::Red(), fuckme);
 						
 					}
 
@@ -131,7 +121,7 @@ void H1Z1ProcessOverlay() {
 				//Vector3 vBot;
 				if (g_pEngine->WorldToScreen(vFeet, vBot)) {
 					//std::cout << " drawX: " << vTop.x << " , drawY: " << vTop.y + h << std::endl;
-					gRenderer->DrawString(vBot.x + 225, vBot.y + 150, Color::Yellow(), ename);
+					gRenderer->DrawString(vBot.x - 5, vBot.y + 25, Color::Yellow(), ent.GetName());
 				}
 
 				break;
@@ -162,7 +152,7 @@ void H1Z1ProcessOverlay() {
 				//	Vector3 vBot;
 				if (g_pEngine->WorldToScreen(vFeet, vBot)) {
 					//std::cout << " drawX: " << vTop.x << " , drawY: " << vTop.y + h << std::endl;
-					gRenderer->DrawString(vBot.x + 225, vBot.y + 150, Color::Red(), ename);
+					gRenderer->DrawString(vBot.x + 225, vBot.y + 150, Color::Red(), ent.GetName());
 				}
 				break;
 
@@ -174,7 +164,7 @@ void H1Z1ProcessOverlay() {
 				//		Vector3 vBot;
 				if (g_pEngine->WorldToScreen(vFeet, vBot)) {
 					//std::cout << " drawX: " << vTop.x << " , drawY: " << vTop.y + h << std::endl;
-					gRenderer->DrawString(vBot.x + 225, vBot.y + 150, Color::Pink(), ename);
+					gRenderer->DrawString(vBot.x + 225, vBot.y + 150, Color::Pink(), ent.GetName());
 				}
 
 				break;
@@ -187,7 +177,7 @@ void H1Z1ProcessOverlay() {
 				//		Vector3 vBot;
 				if (g_pEngine->WorldToScreen(vFeet, vBot)) {
 					//std::cout << " drawX: " << vTop.x << " , drawY: " << vTop.y + h << std::endl;
-					gRenderer->DrawString(vBot.x + 225, vBot.y + 150, Color::Pink(), ename);
+					gRenderer->DrawString(vBot.x + 225, vBot.y + 150, Color::Pink(), ent.GetName());
 				}
 
 				break;
@@ -202,7 +192,7 @@ void H1Z1ProcessOverlay() {
 				//	Vector3 vBot;
 				if (g_pEngine->WorldToScreen(vFeet, vBot)) {
 					//std::cout << " drawX: " << vTop.x << " , drawY: " << vTop.y + h << std::endl;
-					gRenderer->DrawString(vBot.x + 225, vBot.y + 150, Color::Blue(), ename);
+					gRenderer->DrawString(vBot.x + 225, vBot.y + 150, Color::Blue(), ent.GetName());
 				}
 				break;
 
@@ -214,7 +204,7 @@ void H1Z1ProcessOverlay() {
 				//	Vector3 vBot;
 				if (g_pEngine->WorldToScreen(vFeet, vBot)) {
 					//std::cout << " drawX: " << vTop.x << " , drawY: " << vTop.y + h << std::endl;
-					gRenderer->DrawString(vBot.x + 225, vBot.y + 150, Color::White(), ename);
+					gRenderer->DrawString(vBot.x + 225, vBot.y + 150, Color::White(), ent.GetName());
 				}
 				break;
 
@@ -288,7 +278,7 @@ void H1Z1ProcessOverlay() {
 				//	Vector3 vBot;
 				if (g_pEngine->WorldToScreen(vFeet, vBot)) {
 					//std::cout << " drawX: " << vTop.x << " , drawY: " << vTop.y + h << std::endl;
-					gRenderer->DrawString(vBot.x + 225, vBot.y + 150, Color::Cyan(), ename);
+					gRenderer->DrawString(vBot.x + 225, vBot.y + 150, Color::Cyan(), ent.GetName());
 				}
 
 				break;
@@ -324,6 +314,30 @@ void DrawTowns() {
 	}
 }
 
+void DrawPlayerLocation(TestEnt LocalEntity) {
+	std::string s = std::to_string(LocalEntity.m_fD);
+	char const *retChar = s.c_str();  //use char const* as target type
+	gRenderer->DrawString(50, size[1] - 400, Color::Green(), "Direction: ");
+	gRenderer->DrawString(125, size[1] - 400, Color::Green(), retChar);
+
+	std::string s1 = std::to_string(LocalEntity.GetLocation().x);
+	char const* retChar1 = s1.c_str();  //use char const* as target type
+	gRenderer->DrawString(50, size[1] - 380, Color::Green(), "x: ");
+	gRenderer->DrawString(90, size[1] - 380, Color::Green(), retChar1);
+
+
+	std::string s2 = std::to_string(LocalEntity.GetLocation().y);
+	char const *retChar2 = s2.c_str();  //use char const* as target type
+	gRenderer->DrawString(50, size[1] - 360, Color::Green(), "y: ");
+	gRenderer->DrawString(90, size[1] - 360, Color::Green(), retChar2);
+
+
+	std::string s3 = std::to_string(LocalEntity.GetLocation().z);
+	char const *retChar3 = s3.c_str();  //use char const* as target type
+	gRenderer->DrawString(50, size[1] - 340, Color::Green(), "z: ");
+	gRenderer->DrawString(90, size[1] - 340, Color::Green(), retChar3);
+}
+
 void OnFrame() {
 	gRenderer->PreFrame();
 	H1Z1ProcessOverlay();
@@ -351,7 +365,7 @@ int main()
 	bool oCheck = gOverlay->Attach(newhwnd);
 	gRenderer->OnSetup(gOverlay->GetDevice());
 
-	int* size = gOverlay->getSize();
+	size = gOverlay->getSize();
 	std::cout << " x: " << size[0] << "  y: " << size[1] << std::endl;
 	g_pEngine->m_ScreenSize = size;
 
