@@ -44,3 +44,5 @@ inline void BuildVertex(XMFLOAT4 xyzrhw, D3DCOLOR color, Vertex_t* vertexList, i
 }
 
 #endif // RENDERER_H
+
+/* Overload DrawString to take in an int, 0, 1, 2 for text size to use from the m_pFontList */

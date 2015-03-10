@@ -14,11 +14,19 @@
 #define XDRAW_OFFSET 35 //needs to be off text length
 #define YDRAW_OFFSET 22
 
+bool ShowBorderBox = true;
+bool ShowAnimals = true;
+bool ShowPlayers = true;
+bool ShowAggressive = true;
+bool ShowDead = true; //not implented yet
+bool ShowItems = true;
+bool ShowContainers = true;
+bool ShowCities = true;
+
 Overlay* gOverlay = new Overlay();
 Renderer* gRenderer = new Renderer();
 
-// Global size to be used outside gOverlay 
-int *size = gOverlay->getSize();
+int *g_hSize = gOverlay->getSize();
 
 std::vector<Entity> EntityList;
 
@@ -70,24 +78,21 @@ void H1Z1ProcessOverlay() {
 				{
 					ent.UpdateNPC();
 					vFeet = ent.GetLocation();
-					
 
-					if (g_pEngine->WorldToScreen(vFeet, vBot)) { // && g_pEngine->WorldToScreen(vHead, vTop)) {
+					if (g_pEngine->WorldToScreen(vFeet, vBot)) {
 						ent.SetDistanceFrom(LocalEntity.GetLocation());
 
-						char displayText[64]; memset(displayText, NULL, sizeof(char[64]));
-						sprintf(displayText, "%s [%im]", ent.GetName(), ent.GetDist());
-
 						if (ent.GetId() == 0x13 || ent.GetId() == 0x55) { //deer or rabbit
-							gRenderer->DrawString(vBot.x - XDRAW_OFFSET, vBot.y + YDRAW_OFFSET, Color::LightBrown(), displayText);
+							gRenderer->DrawString(vBot.x - XDRAW_OFFSET, vBot.y + YDRAW_OFFSET, Color::LightBrown(), ent.GetDisplayText());
 						}
-						else if (ent.GetId() == 0x04) { // Player 0x04,  this also gets Stash - could filter out / color
-							gRenderer->DrawString(vBot.x - XDRAW_OFFSET, vBot.y + YDRAW_OFFSET, Color::Red(), displayText);
+						else if (ent.GetId() == 0x04) { // Player 0x04,  this also gets Stash/Campfire - could filter out / color
+							gRenderer->DrawString(vBot.x - XDRAW_OFFSET, vBot.y + YDRAW_OFFSET, Color::Red(), ent.GetDisplayText());
 						}
 						else { //Wolf, Bear, Zombies
-								gRenderer->DrawString(vBot.x - XDRAW_OFFSET, vBot.y + YDRAW_OFFSET, Color::DarkRed(), displayText);
+							gRenderer->DrawString(vBot.x - XDRAW_OFFSET, vBot.y + YDRAW_OFFSET, Color::DarkRed(), ent.GetDisplayText());
 						}
 						
+						// Draws the BorderBox
 						vHead = ent.GetLocation() + Vector3(0, 1.8, 0);
 						if (g_pEngine->WorldToScreen(vHead, vTop)) {		
 							float h = vBot.y - vTop.y;
@@ -107,10 +112,7 @@ void H1Z1ProcessOverlay() {
 				if (g_pEngine->WorldToScreen(vFeet, vBot)) {
 					ent.SetDistanceFrom(LocalEntity.GetLocation());
 
-					char displayText[64]; memset(displayText, NULL, sizeof(char[64]));
-					sprintf(displayText, "%s [%im]", ent.GetName(), ent.GetDist());
-
-					gRenderer->DrawString(vBot.x - XDRAW_OFFSET, vBot.y + YDRAW_OFFSET, Color::Yellow(), displayText);
+					gRenderer->DrawString(vBot.x - XDRAW_OFFSET, vBot.y + YDRAW_OFFSET, Color::Yellow(), ent.GetDisplayText());
 				}
 				break;
 
@@ -129,10 +131,7 @@ void H1Z1ProcessOverlay() {
 				if (g_pEngine->WorldToScreen(vFeet, vBot)) {
 					ent.SetDistanceFrom(LocalEntity.GetLocation());
 
-					char displayText[64]; memset(displayText, NULL, sizeof(char[64]));
-					sprintf(displayText, "%s [%im]", ent.GetName(), ent.GetDist());
-
-					gRenderer->DrawString(vBot.x - XDRAW_OFFSET, vBot.y + YDRAW_OFFSET, Color::Red(), displayText);
+					gRenderer->DrawString(vBot.x - XDRAW_OFFSET, vBot.y + YDRAW_OFFSET, Color::Red(), ent.GetDisplayText());
 				}
 				break;
 
@@ -143,25 +142,18 @@ void H1Z1ProcessOverlay() {
 				if (g_pEngine->WorldToScreen(vFeet, vBot)) {
 					ent.SetDistanceFrom(LocalEntity.GetLocation());
 
-					char displayText[64]; memset(displayText, NULL, sizeof(char[64]));
-					sprintf(displayText, "%s [%im]", ent.GetName(), ent.GetDist());
-
-					gRenderer->DrawString(vBot.x - XDRAW_OFFSET, vBot.y + YDRAW_OFFSET, Color::Pink(), displayText);
+					gRenderer->DrawString(vBot.x - XDRAW_OFFSET, vBot.y + YDRAW_OFFSET, Color::Pink(), ent.GetDisplayText());
 				}
 				break;
 
 			case 0x34/*Weapons*/:
 				ent.UpdateLoot();
-
 				vFeet = ent.GetLocation();
-				//		Vector3 vBot;
+
 				if (g_pEngine->WorldToScreen(vFeet, vBot)) {
 					ent.SetDistanceFrom(LocalEntity.GetLocation());
 
-					char displayText[64]; memset(displayText, NULL, sizeof(char[64]));
-					sprintf(displayText, "%s [%im]", ent.GetName(), ent.GetDist());
-
-					gRenderer->DrawString(vBot.x - XDRAW_OFFSET, vBot.y + YDRAW_OFFSET, Color::Pink(), displayText);
+					gRenderer->DrawString(vBot.x - XDRAW_OFFSET, vBot.y + YDRAW_OFFSET, Color::Pink(), ent.GetDisplayText());
 				}
 				break;
 
@@ -174,10 +166,7 @@ void H1Z1ProcessOverlay() {
 				if (g_pEngine->WorldToScreen(vFeet, vBot)) {
 					ent.SetDistanceFrom(LocalEntity.GetLocation());
 
-					char displayText[64]; memset(displayText, NULL, sizeof(char[64]));
-					sprintf(displayText, "%s [%im]", ent.GetName(), ent.GetDist());
-
-					gRenderer->DrawString(vBot.x - XDRAW_OFFSET, vBot.y + YDRAW_OFFSET, Color::Blue(), displayText);
+					gRenderer->DrawString(vBot.x - XDRAW_OFFSET, vBot.y + YDRAW_OFFSET, Color::Blue(), ent.GetDisplayText());
 				}
 				break;
 
@@ -188,10 +177,7 @@ void H1Z1ProcessOverlay() {
 				if (g_pEngine->WorldToScreen(vFeet, vBot)) {
 					ent.SetDistanceFrom(LocalEntity.GetLocation());
 
-					char displayText[64]; memset(displayText, NULL, sizeof(char[64]));
-					sprintf(displayText, "%s [%im]", ent.GetName(), ent.GetDist());
-
-					gRenderer->DrawString(vBot.x - XDRAW_OFFSET, vBot.y + YDRAW_OFFSET, Color::White(), displayText);
+					gRenderer->DrawString(vBot.x - XDRAW_OFFSET, vBot.y + YDRAW_OFFSET, Color::White(), ent.GetDisplayText());
 				}
 				break;
 
@@ -264,10 +250,7 @@ void H1Z1ProcessOverlay() {
 				if (g_pEngine->WorldToScreen(vFeet, vBot)) {
 					ent.SetDistanceFrom(LocalEntity.GetLocation());
 
-					char displayText[64]; memset(displayText, NULL, sizeof(char[64]));
-					sprintf(displayText, "%s [%im]", ent.GetName(), ent.GetDist());
-
-					gRenderer->DrawString(vBot.x - XDRAW_OFFSET, vBot.y + YDRAW_OFFSET, Color::Cyan(), displayText);
+					gRenderer->DrawString(vBot.x - XDRAW_OFFSET, vBot.y + YDRAW_OFFSET, Color::Cyan(), ent.GetDisplayText());
 				}
 				break;
 			}
@@ -304,25 +287,25 @@ void DrawTowns() {
 void DrawPlayerLocation(Entity LocalEntity) {
 	std::string s = std::to_string(LocalEntity.GetDir());
 	char const *retChar = s.c_str();  //use char const* as target type
-	gRenderer->DrawString(50, size[1] - 400, Color::Green(), "Direction: ");
-	gRenderer->DrawString(125, size[1] - 400, Color::Green(), retChar);
+	gRenderer->DrawString(50, g_hSize[1] - 400, Color::Green(), "Direction: ");
+	gRenderer->DrawString(125, g_hSize[1] - 400, Color::Green(), retChar);
 
 	std::string s1 = std::to_string(LocalEntity.GetLocation().x);
 	char const* retChar1 = s1.c_str();  //use char const* as target type
-	gRenderer->DrawString(50, size[1] - 380, Color::Green(), "x: ");
-	gRenderer->DrawString(90, size[1] - 380, Color::Green(), retChar1);
+	gRenderer->DrawString(50, g_hSize[1] - 380, Color::Green(), "x: ");
+	gRenderer->DrawString(90, g_hSize[1] - 380, Color::Green(), retChar1);
 
 
 	std::string s2 = std::to_string(LocalEntity.GetLocation().y);
 	char const *retChar2 = s2.c_str();  //use char const* as target type
-	gRenderer->DrawString(50, size[1] - 360, Color::Green(), "y: ");
-	gRenderer->DrawString(90, size[1] - 360, Color::Green(), retChar2);
+	gRenderer->DrawString(50, g_hSize[1] - 360, Color::Green(), "y: ");
+	gRenderer->DrawString(90, g_hSize[1] - 360, Color::Green(), retChar2);
 
 
 	std::string s3 = std::to_string(LocalEntity.GetLocation().z);
 	char const *retChar3 = s3.c_str();  //use char const* as target type
-	gRenderer->DrawString(50, size[1] - 340, Color::Green(), "z: ");
-	gRenderer->DrawString(90, size[1] - 340, Color::Green(), retChar3);
+	gRenderer->DrawString(50, g_hSize[1] - 340, Color::Green(), "z: ");
+	gRenderer->DrawString(90, g_hSize[1] - 340, Color::Green(), retChar3);
 }
 
 // Debug - Displays XYZ of ent next to it
@@ -347,6 +330,7 @@ void OnFrame() {
 	gRenderer->PostFrame();
 }
 
+//use this main function when you want NO CONSOLE
 //int WINAPI WinMain(HINSTANCE hInstance,
 //	HINSTANCE hPrevInstance,
 //	LPSTR lpCmdLine,
@@ -363,9 +347,9 @@ int main()
 	bool oCheck = gOverlay->Attach(newhwnd);
 	gRenderer->OnSetup(gOverlay->GetDevice());
 
-	size = gOverlay->getSize(); //set size for use in drawing
-	g_pEngine->m_ScreenSize = size;
-	std::cout << " x: " << size[0] << "  y: " << size[1] << std::endl;
+	g_hSize = gOverlay->getSize(); //set size for use in drawing
+	g_pEngine->m_ScreenSize = g_hSize;
+	std::cout << " x: " << g_hSize[0] << "  y: " << g_hSize[1] << std::endl;
 
 	gOverlay->AddOnFrame(OnFrame);
 	gOverlay->OnFrame();

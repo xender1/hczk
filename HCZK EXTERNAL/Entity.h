@@ -19,6 +19,7 @@ public:
 	void		UpdateLoot();					  //initialize for all else (guns,ammo,loot,parts,food,...)
 
 	void		SetDistanceFrom(Vector3 vec);
+	const char* GetDisplayText();
 
 	DWORD_PTR	GetPointer();
 	Vector3		GetLocation();
@@ -37,6 +38,7 @@ private:
 	int			m_iId;
 
 	char		m_pName[32];
+	char		m_pDisplayText[64];
 
 	Vector3		m_vLocation;
 	float		m_fX;

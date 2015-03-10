@@ -40,6 +40,7 @@ private:
 
 private:
 	bool					InitDirectX();
+	bool					InitKeyboard();
 
 private:
 
@@ -50,6 +51,9 @@ private:
 	LPDIRECT3D9				m_pDirect3D;    // the pointer to our Direct3D interface
 	LPDIRECT3DDEVICE9		m_pDevice;		// pointer to the device class
 	D3DPRESENT_PARAMETERS	m_Present;		// struct to hold various device information
+
+	LPDIRECTINPUT8 			m_pdxKeybObj;
+	LPDIRECTINPUTDEVICE8 	m_pdxKeybDevice; //keyboard
 
 	std::vector<OnFrameFn>	m_pOnFrameList;
 

@@ -75,6 +75,11 @@ void Entity::SetDistanceFrom(Vector3 vec) {
 	m_iDist = int(sqrt(((distX * distX) + (distY * distY)) + (distZ * distZ)) + 0.5);
 }
 
+const char* Entity::GetDisplayText() {
+	sprintf(m_pDisplayText, "%s [%im]", GetName(), GetDist());
+	return m_pDisplayText;
+}
+
 DWORD_PTR Entity::GetPointer() {
 	return m_dwPointer;
 }
@@ -111,4 +116,5 @@ void Entity::Clear() {
 	m_fDir = 0.0f;
 
 	memset(m_pName, NULL, sizeof(char[32]));
+	memset(m_pDisplayText, NULL, sizeof(char[64]));
 }

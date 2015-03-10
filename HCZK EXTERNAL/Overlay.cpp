@@ -107,7 +107,7 @@ bool Overlay::Attach(HWND hWnd) {
 	wc.cbSize = sizeof(WNDCLASSEX);
 	wc.style = CS_HREDRAW | CS_VREDRAW;
 	wc.lpfnWndProc = WindowProc;
-	wc.hInstance = NULL;
+	wc.hInstance = GetModuleHandle(NULL); //keyboard input
 	wc.hCursor = LoadCursor(NULL, IDC_ARROW);
 	wc.hbrBackground = (HBRUSH)RGB(0, 0, 0);
 	wc.lpszClassName = "WindowClass";
@@ -122,7 +122,7 @@ bool Overlay::Attach(HWND hWnd) {
 		m_nSize[0], m_nSize[1],
 		NULL,
 		NULL,
-		NULL,
+		GetModuleHandle(NULL),
 		NULL);
 
 	SetWindowLong(m_hWnd, GWL_EXSTYLE, (int)GetWindowLong(m_hWnd, GWL_EXSTYLE) | WS_EX_LAYERED | WS_EX_TRANSPARENT);
@@ -130,7 +130,8 @@ bool Overlay::Attach(HWND hWnd) {
 
 	ShowWindow(m_hWnd, SW_SHOWDEFAULT);
 
-	int ret = InitDirectX();
+	bool ret = InitDirectX();
+	bool kret = InitKeyboard();
 
 	return 1;
 }
@@ -153,6 +154,17 @@ LPDIRECT3DDEVICE9 Overlay::GetDevice() const {
 	return m_pDevice;
 }
 
+bool Overlay::InitKeyboard() {
+	DirectInput8Create(GetModuleHandle(NULL), DIRECTINPUT_VERSION, IID_IDirectInput8, (void**)&m_pdxKeybObj, NULL);
+	m_pdxKeybObj->CreateDevice(GUID_SysKeyboard, &m_pdxKeybDevice, NULL);
+
+	m_pdxKeybDevice->SetDataFormat(&c_dfDIKeyboard);
+	m_pdxKeybDevice->SetCooperativeLevel(m_hWnd, DISCL_FOREGROUND | DISCL_NONEXCLUSIVE);
+	m_pdxKeybDevice->Acquire();
+
+	return true;
+}
+
 bool Overlay::InitDirectX() {
 	m_Present.Windowed = TRUE;    // program windowed, not fullscreen
 	m_Present.SwapEffect = D3DSWAPEFFECT_DISCARD;    // discard old frames
@@ -172,7 +184,7 @@ bool Overlay::InitDirectX() {
 		&m_Present,
 		&m_pDevice);
 
-	return 1;
+	return true;
 }
 
 
