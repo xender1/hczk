@@ -1,0 +1,90 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Direct3D">
+      <UniqueIdentifier>{f1fc7252-138b-4902-b2d4-c5629e6b5b84}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="H1Z1">
+      <UniqueIdentifier>{4ca29d00-8a1d-4687-8e73-cc71026f831e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Include">
+      <UniqueIdentifier>{c20e4082-9a6a-41dd-8fa5-19b94fdce638}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Memory">
+      <UniqueIdentifier>{de2315d6-47ed-45c3-a989-7fe79e2a3602}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Overlay">
+      <UniqueIdentifier>{1e403ec1-4300-4e57-bc8a-053b312cdee0}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="main.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Overlay.cpp">
+      <Filter>Overlay</Filter>
+    </ClCompile>
+    <ClCompile Include="Process.cpp">
+      <Filter>Memory</Filter>
+    </ClCompile>
+    <ClCompile Include="Module.cpp">
+      <Filter>Memory</Filter>
+    </ClCompile>
+    <ClCompile Include="Renderer.cpp">
+      <Filter>Direct3D</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine.cpp">
+      <Filter>H1Z1</Filter>
+    </ClCompile>
+    <ClCompile Include="Entity.cpp">
+      <Filter>H1Z1</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Color.h">
+      <Filter>Direct3D</Filter>
+    </ClInclude>
+    <ClInclude Include="Overlay.h">
+      <Filter>Overlay</Filter>
+    </ClInclude>
+    <ClInclude Include="Process.h">
+      <Filter>Memory</Filter>
+    </ClInclude>
+    <ClInclude Include="Module.h">
+      <Filter>Memory</Filter>
+    </ClInclude>
+    <ClInclude Include="Renderer.h">
+      <Filter>Direct3D</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine.h">
+      <Filter>H1Z1</Filter>
+    </ClInclude>
+    <ClInclude Include="Entity.h">
+      <Filter>H1Z1</Filter>
+    </ClInclude>
+    <ClInclude Include="SDK.h">
+      <Filter>H1Z1</Filter>
+    </ClInclude>
+    <ClInclude Include="Direct3D.h">
+      <Filter>Include</Filter>
+    </ClInclude>
+    <ClInclude Include="Math.h">
+      <Filter>Include</Filter>
+    </ClInclude>
+    <ClInclude Include="Main.h">
+      <Filter>Include</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>
