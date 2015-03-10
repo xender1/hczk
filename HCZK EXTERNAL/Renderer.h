@@ -29,6 +29,9 @@ public:
 	void						DrawRect(int x, int y, int w, int h, Color color);
 	void						DrawString(int x, int y, Color color, const char* text);
 
+	void						DrawBorderBox(int x, int y, int w, int h, int t, Color color);
+	void						DrawBorderBoxOut(int x, int y, int w, int h, int t, Color color, Color out);
+
 private:
 	std::vector<LPD3DXFONT>		m_pFontList;
 	LPD3DXFONT					m_mFont;

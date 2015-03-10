@@ -58,3 +58,16 @@ void Renderer::CreateFont(int h, int w, char* font) {
 	D3DXCreateFont(m_pDevice, 50, 0, FW_BOLD, 1, 0, DEFAULT_CHARSET, OUT_DEFAULT_PRECIS, DEFAULT_QUALITY, DEFAULT_PITCH | FF_DONTCARE, font, &tFont);
 	m_pFontList.push_back(tFont);
 }
+
+void Renderer::DrawBorderBox(int x, int y, int w, int h, int t, Color color) {
+	DrawRect(x, y, w, t, color);
+	DrawRect(x, y, t, h, color);
+	DrawRect(x + w, y, t, h, color);
+	DrawRect(x, y + h, w + t, t, color);
+}
+
+void Renderer::DrawBorderBoxOut(int x, int y, int w, int h, int t, Color color, Color out) {
+	DrawBorderBox(x, y, w, h, t, color);
+	DrawBorderBox(x - t, y - t, w + t * 2, h + t * 2, 1, out);
+	DrawBorderBox(x + t, y + t, w - t * 2, h - t * 2, 1, out);
+}

@@ -25,11 +25,11 @@ std::vector<Entity> EntityList;
 void DrawTowns();
 void DrawPlayerLocation(Entity LocalEntity);
 
+//Debug
 void DrawEntityLocation(Entity ent, Vector3 vBot);
+void DrawFunTime(); //used for testing/adding in new Renderer functions
 
 void H1Z1ProcessOverlay() {
-
-	gRenderer->DrawRect(100, 100, 30, 60, Color::Red());
 
 	//Get Base Pointers to H1Z1
 	DWORD_PTR dwGameClient = process->Read<DWORD_PTR>(GAME_CLIENT_ADDRESS);
@@ -56,6 +56,7 @@ void H1Z1ProcessOverlay() {
 			ent.SetName();
 
 			Vector3 vBot; Vector3 vFeet; //for world to screen
+			Vector3 vTop; Vector3 vHead;
 			switch (ent.GetId())
 			{
 			case 0x04/*Player*/:
@@ -64,13 +65,14 @@ void H1Z1ProcessOverlay() {
 			case 0x14/*Wolf*/:
 			case 0x50/*Bear*/:
 			case 0x55/*Rabbit*/:
-			case 0x5b/*Zombie*/:
+			case 0x5b/*Zombie catch */:
 				if (process->Read<float>(dwEntity + 0x1CC) == 1.0f)
 				{
 					ent.UpdateNPC();
 					vFeet = ent.GetLocation();
+					
 
-					if (g_pEngine->WorldToScreen(vFeet, vBot)) {
+					if (g_pEngine->WorldToScreen(vFeet, vBot)) { // && g_pEngine->WorldToScreen(vHead, vTop)) {
 						ent.SetDistanceFrom(LocalEntity.GetLocation());
 
 						char displayText[64]; memset(displayText, NULL, sizeof(char[64]));
@@ -79,8 +81,18 @@ void H1Z1ProcessOverlay() {
 						if (ent.GetId() == 0x13 || ent.GetId() == 0x55) { //deer or rabbit
 							gRenderer->DrawString(vBot.x - XDRAW_OFFSET, vBot.y + YDRAW_OFFSET, Color::LightBrown(), displayText);
 						}
-						else { // Player 0x04, Wolf, Bear, Zombies
+						else if (ent.GetId() == 0x04) { // Player 0x04,  this also gets Stash - could filter out / color
 							gRenderer->DrawString(vBot.x - XDRAW_OFFSET, vBot.y + YDRAW_OFFSET, Color::Red(), displayText);
+						}
+						else { //Wolf, Bear, Zombies
+								gRenderer->DrawString(vBot.x - XDRAW_OFFSET, vBot.y + YDRAW_OFFSET, Color::DarkRed(), displayText);
+						}
+						
+						vHead = ent.GetLocation() + Vector3(0, 1.8, 0);
+						if (g_pEngine->WorldToScreen(vHead, vTop)) {		
+							float h = vBot.y - vTop.y;
+							float w = h / 5.0f;
+							gRenderer->DrawBorderBoxOut(vTop.x - w, vTop.y + YDRAW_OFFSET, w * 2, h, 1, Color::Cyan(), Color::Black());
 						}
 						//DrawEntityLocation(ent, vBot);//debug function
 					}
@@ -313,6 +325,7 @@ void DrawPlayerLocation(Entity LocalEntity) {
 	gRenderer->DrawString(90, size[1] - 340, Color::Green(), retChar3);
 }
 
+// Debug - Displays XYZ of ent next to it
 void DrawEntityLocation(Entity ent, Vector3 vBot) {
 	std::string s1 = std::to_string(ent.GetLocation().x);
 	char const* retChar1 = s1.c_str();  //use char const* as target type
@@ -330,6 +343,7 @@ void DrawEntityLocation(Entity ent, Vector3 vBot) {
 void OnFrame() {
 	gRenderer->PreFrame();
 	H1Z1ProcessOverlay();
+	//DrawFunTime();
 	gRenderer->PostFrame();
 }
 
@@ -359,5 +373,7 @@ int main()
 	return 1;
 }
 
-/* set up entity class, handle all entities in this class */
+void DrawFunTime() {
+	gRenderer->DrawRect(100, 100, 30, 60, Color::Red());
+}
 
