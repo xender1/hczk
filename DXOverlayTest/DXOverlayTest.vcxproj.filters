@@ -66,9 +66,6 @@
     <ClInclude Include="Entity.h">
       <Filter>H1Z1</Filter>
     </ClInclude>
-    <ClInclude Include="TestEnt.h">
-      <Filter>H1Z1</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DXOverlayTest.cpp">
@@ -90,9 +87,6 @@
       <Filter>Memory</Filter>
     </ClCompile>
     <ClCompile Include="Entity.cpp">
-      <Filter>H1Z1</Filter>
-    </ClCompile>
-    <ClCompile Include="TestEnt.cpp">
       <Filter>H1Z1</Filter>
     </ClCompile>
   </ItemGroup>

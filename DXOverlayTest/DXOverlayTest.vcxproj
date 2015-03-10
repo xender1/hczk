@@ -111,7 +111,6 @@
     <ClInclude Include="Process.h" />
     <ClInclude Include="Renderer.h" />
     <ClInclude Include="SDK.h" />
-    <ClInclude Include="TestEnt.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DXOverlayTest.cpp" />
@@ -121,7 +120,6 @@
     <ClCompile Include="Overlay.cpp" />
     <ClCompile Include="Process.cpp" />
     <ClCompile Include="Renderer.cpp" />
-    <ClCompile Include="TestEnt.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -160,7 +160,6 @@ DWORD Process::GetProcessIdByName(const std::string& name) {
 	}
 
 	do {
-		std::cout << Entry.szExeFile << std::endl;
 		if (name.compare(Entry.szExeFile) == 0) {
 			break;
 		}

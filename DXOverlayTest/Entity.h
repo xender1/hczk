@@ -8,48 +8,44 @@
 class Entity {
 public:
 	Entity();
-	Entity(long dwPointer);
 	~Entity();
 
-	void		UpdateLocal(long dwPointer);
-	void		UpdateZombie();
-	void		UpdateLoot();
+	void		UpdateLocal(DWORD_PTR dwPointer); //initialize self (id,name,x,y,z,d)
+
+	void		UpdateId(DWORD_PTR dwPointer);    //standard initializor for non self
+	void		SetName();    //standard initializor for non self
+
+	void		UpdateNPC();					  //initialize enemy,zombie,animal
+	void		UpdateLoot();					  //initialize for all else (guns,ammo,loot,parts,food,...)
+
+	void		SetDistanceFrom(Vector3 vec);
 
 	DWORD_PTR	GetPointer();
-
-	Vector3		GetOrigin();
-	Vector3		GetVelocity();
-
-	int			GetType();
-
-	bool		IsValid();
-
+	Vector3		GetLocation();
 	const char*	GetName();
-	const char*		Stringingify(float fVal);
+	int			GetId();
 
-	const char* DrawLocalData();
+	int			GetDist(); //dist from player
+	float		GetDir(); //set for local player only
 
 private:
-	void			Clear();
+	void		Clear(); //clear alls
 
 private:
 	DWORD_PTR	m_dwPointer;
 
-	Vector3		m_vFeet;
-	Vector3		m_vHead;
-	Vector3		m_vVelocity;
+	int			m_iId;
 
-	int			m_iType;
 	char		m_pName[32];
 
-public:
-	float		m_x;
-	float		m_y;
-	float		m_z;
-	float		m_d;
-	float		m_speed;
-	float		m_yaw;
-	float		m_pitch;
+	Vector3		m_vLocation;
+	float		m_fX;
+	float		m_fY;
+	float		m_fZ;
+	float		m_fDir;
+	int			m_iDist;
+
+
 };
 
 #endif // ENTITY_H

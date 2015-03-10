@@ -8,9 +8,11 @@
 #include "Process.h"
 #include "Engine.h"
 #include "Entity.h"
-#include "TestEnt.h"
 
 #include "SDK.h"
+
+int XDRAW_OFFSET = 35; //needs to be off text length
+int YDRAW_OFFSET = 22;
 
 Overlay* gOverlay = new Overlay();
 Renderer* gRenderer = new Renderer();
@@ -20,9 +22,9 @@ int *size = gOverlay->getSize();
 std::vector<Entity> EntityList;
 
 void DrawTowns();
-void DrawPlayerLocation(TestEnt LocalEntity);
+void DrawPlayerLocation(Entity LocalEntity);
 
-void DrawEntityLocation(TestEnt ent, Vector3 vBot);
+void DrawEntityLocation(Entity ent, Vector3 vBot);
 
 void H1Z1ProcessOverlay() {
 
@@ -36,7 +38,7 @@ void H1Z1ProcessOverlay() {
 	int cntEntProcessed = 0;
 
 	/* PLayer Locations and Drawing Player Locations */
-	TestEnt LocalEntity;
+	Entity LocalEntity;
 	LocalEntity.UpdateLocal(dwFirstEntity);
 	DrawPlayerLocation(LocalEntity);
 
@@ -44,7 +46,7 @@ void H1Z1ProcessOverlay() {
 	DWORD_PTR dwEntity;
 	dwEntity = process->Read<DWORD_PTR>(dwFirstEntity + 0x400);
 	for (int i = 1; i < entityCount; i++) {
-		TestEnt ent; 
+		Entity ent;
 		ent.UpdateId(dwEntity); // + sets entity id
 
 		if (ent.GetId() != 0) {
@@ -68,13 +70,12 @@ void H1Z1ProcessOverlay() {
 					vFeet = ent.GetLocation();
 
 					if (g_pEngine->WorldToScreen(vFeet, vBot)) {
-
 						ent.SetDistanceFrom(LocalEntity.GetLocation());
 
-						char fuckme[120]; memset(fuckme, NULL, sizeof(char[120]));
-						sprintf(fuckme, "%s [%i m]", ent.GetName(), ent.m_iDist);
-						
-						gRenderer->DrawString(vBot.x - 27, vBot.y + 22, Color::Red(), fuckme);
+						char displayText[64]; memset(displayText, NULL, sizeof(char[64]));
+						sprintf(displayText, "%s [%im]", ent.GetName(), ent.GetDist());
+
+						gRenderer->DrawString(vBot.x - XDRAW_OFFSET, vBot.y + YDRAW_OFFSET, Color::Red(), displayText);
 						//DrawEntityLocation(ent, vBot);//debug function
 					}
 
@@ -86,7 +87,12 @@ void H1Z1ProcessOverlay() {
 				vFeet = ent.GetLocation();
 
 				if (g_pEngine->WorldToScreen(vFeet, vBot)) {
-					gRenderer->DrawString(vBot.x - 27, vBot.y + 22, Color::Yellow(), ent.GetName());
+					ent.SetDistanceFrom(LocalEntity.GetLocation());
+
+					char displayText[64]; memset(displayText, NULL, sizeof(char[64]));
+					sprintf(displayText, "%s [%im]", ent.GetName(), ent.GetDist());
+
+					gRenderer->DrawString(vBot.x - XDRAW_OFFSET, vBot.y + YDRAW_OFFSET, Color::Yellow(), displayText);
 				}
 				break;
 
@@ -103,7 +109,12 @@ void H1Z1ProcessOverlay() {
 				ent.UpdateLoot();
 				vFeet = ent.GetLocation();
 				if (g_pEngine->WorldToScreen(vFeet, vBot)) {
-					gRenderer->DrawString(vBot.x - 27, vBot.y + 22, Color::Red(), ent.GetName());
+					ent.SetDistanceFrom(LocalEntity.GetLocation());
+
+					char displayText[64]; memset(displayText, NULL, sizeof(char[64]));
+					sprintf(displayText, "%s [%im]", ent.GetName(), ent.GetDist());
+
+					gRenderer->DrawString(vBot.x - XDRAW_OFFSET, vBot.y + YDRAW_OFFSET, Color::Red(), displayText);
 				}
 				break;
 
@@ -112,7 +123,12 @@ void H1Z1ProcessOverlay() {
 				vFeet = ent.GetLocation();
 
 				if (g_pEngine->WorldToScreen(vFeet, vBot)) {
-					gRenderer->DrawString(vBot.x - 27, vBot.y + 22, Color::Pink(), ent.GetName());
+					ent.SetDistanceFrom(LocalEntity.GetLocation());
+
+					char displayText[64]; memset(displayText, NULL, sizeof(char[64]));
+					sprintf(displayText, "%s [%im]", ent.GetName(), ent.GetDist());
+
+					gRenderer->DrawString(vBot.x - XDRAW_OFFSET, vBot.y + YDRAW_OFFSET, Color::Pink(), displayText);
 				}
 				break;
 
@@ -122,7 +138,12 @@ void H1Z1ProcessOverlay() {
 				vFeet = ent.GetLocation();
 				//		Vector3 vBot;
 				if (g_pEngine->WorldToScreen(vFeet, vBot)) {
-					gRenderer->DrawString(vBot.x - 27, vBot.y + 22, Color::Pink(), ent.GetName());
+					ent.SetDistanceFrom(LocalEntity.GetLocation());
+
+					char displayText[64]; memset(displayText, NULL, sizeof(char[64]));
+					sprintf(displayText, "%s [%im]", ent.GetName(), ent.GetDist());
+
+					gRenderer->DrawString(vBot.x - XDRAW_OFFSET, vBot.y + YDRAW_OFFSET, Color::Pink(), displayText);
 				}
 				break;
 
@@ -133,7 +154,12 @@ void H1Z1ProcessOverlay() {
 				vFeet = ent.GetLocation();
 
 				if (g_pEngine->WorldToScreen(vFeet, vBot)) {
-					gRenderer->DrawString(vBot.x - 27, vBot.y + 22, Color::Blue(), ent.GetName());
+					ent.SetDistanceFrom(LocalEntity.GetLocation());
+
+					char displayText[64]; memset(displayText, NULL, sizeof(char[64]));
+					sprintf(displayText, "%s [%im]", ent.GetName(), ent.GetDist());
+
+					gRenderer->DrawString(vBot.x - XDRAW_OFFSET, vBot.y + YDRAW_OFFSET, Color::Blue(), displayText);
 				}
 				break;
 
@@ -142,7 +168,12 @@ void H1Z1ProcessOverlay() {
 				vFeet = ent.GetLocation();
 
 				if (g_pEngine->WorldToScreen(vFeet, vBot)) {
-					gRenderer->DrawString(vBot.x - 27, vBot.y + 22, Color::White(), ent.GetName());
+					ent.SetDistanceFrom(LocalEntity.GetLocation());
+
+					char displayText[64]; memset(displayText, NULL, sizeof(char[64]));
+					sprintf(displayText, "%s [%im]", ent.GetName(), ent.GetDist());
+
+					gRenderer->DrawString(vBot.x - XDRAW_OFFSET, vBot.y + YDRAW_OFFSET, Color::White(), displayText);
 				}
 				break;
 
@@ -213,7 +244,12 @@ void H1Z1ProcessOverlay() {
 				vFeet = ent.GetLocation();
 
 				if (g_pEngine->WorldToScreen(vFeet, vBot)) {
-					gRenderer->DrawString(vBot.x - 27, vBot.y + 22, Color::Cyan(), ent.GetName());
+					ent.SetDistanceFrom(LocalEntity.GetLocation());
+
+					char displayText[64]; memset(displayText, NULL, sizeof(char[64]));
+					sprintf(displayText, "%s [%im]", ent.GetName(), ent.GetDist());
+
+					gRenderer->DrawString(vBot.x - XDRAW_OFFSET, vBot.y + YDRAW_OFFSET, Color::Cyan(), displayText);
 				}
 				break;
 			}
@@ -225,17 +261,18 @@ void H1Z1ProcessOverlay() {
 	//std::cout << "processed: " << cntEntProcessed << " of " << entityCount << std::endl;
 }
 
+// Meeh....weak....fix
 void DrawTowns() {
 	Vector3 pValleyVect(-129.0f, 40.0f, -1146.0f);
 	Vector3 cranVect(-1233.0f, 90.0f, 1855.0f);
 	Vector3 ranchVect(2003.0f, 50.0f, 2221.0f);
 
-	Vector3 pValleyBot;
+	Vector3 pBot;
 	Vector3 cBot;
 	Vector3 rBot;
 
-	if (g_pEngine->WorldToScreen(pValleyVect, pValleyBot)) {
-		gRenderer->DrawString(pValleyBot.x, pValleyBot.y - 10, Color::Black(), "Pleasant Valley");
+	if (g_pEngine->WorldToScreen(pValleyVect, pBot)) {
+		gRenderer->DrawString(pBot.x, pBot.y - 10, Color::Black(), "Pleasant Valley");
 	}
 	if (g_pEngine->WorldToScreen(cranVect, cBot)) {
 		gRenderer->DrawString(cBot.x, cBot.y - 10, Color::Black(), "Cranberry");
@@ -246,8 +283,8 @@ void DrawTowns() {
 }
 
 // Terrible...fix
-void DrawPlayerLocation(TestEnt LocalEntity) {
-	std::string s = std::to_string(LocalEntity.m_fD);
+void DrawPlayerLocation(Entity LocalEntity) {
+	std::string s = std::to_string(LocalEntity.GetDir());
 	char const *retChar = s.c_str();  //use char const* as target type
 	gRenderer->DrawString(50, size[1] - 400, Color::Green(), "Direction: ");
 	gRenderer->DrawString(125, size[1] - 400, Color::Green(), retChar);
@@ -270,7 +307,7 @@ void DrawPlayerLocation(TestEnt LocalEntity) {
 	gRenderer->DrawString(90, size[1] - 340, Color::Green(), retChar3);
 }
 
-void DrawEntityLocation(TestEnt ent, Vector3 vBot) {
+void DrawEntityLocation(Entity ent, Vector3 vBot) {
 	std::string s1 = std::to_string(ent.GetLocation().x);
 	char const* retChar1 = s1.c_str();  //use char const* as target type
 	gRenderer->DrawString(vBot.x + 10, vBot.y - 50, Color::Green(), retChar1);
@@ -297,27 +334,22 @@ void OnFrame() {
 int main() 
 {
 
-	//process->DumpAllProcessNames();
-
-	float test = 1.1f;
-
-	std::cout << test << std::endl;
+	process->DumpAllProcessNames();
 	
 	char * value = "Untitled - Notepad";
-
 	HWND newhwnd = FindWindow(NULL, value);
 
 	bool pCheck = process->Attach("H1Z1.exe"); // "H1Z1.exe"
 	bool oCheck = gOverlay->Attach(newhwnd);
 	gRenderer->OnSetup(gOverlay->GetDevice());
 
-	size = gOverlay->getSize();
-	std::cout << " x: " << size[0] << "  y: " << size[1] << std::endl;
+	size = gOverlay->getSize(); //set size for use in drawing
 	g_pEngine->m_ScreenSize = size;
+	std::cout << " x: " << size[0] << "  y: " << size[1] << std::endl;
 
 	gOverlay->AddOnFrame(OnFrame);
 	gOverlay->OnFrame();
-	//getchar();
+	//getchar(); //debug hold for viewing
 	return 1;
 }
 
