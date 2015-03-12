@@ -17,25 +17,40 @@
 #define XDRAW_OFFSET 35 //needs to be off text length
 #define YDRAW_OFFSET 22
 
+/* Global Overlay/Render declarations */
 Overlay* gOverlay = new Overlay();
 Renderer* gRenderer = new Renderer();
 
-int *g_hSize = gOverlay->getSize();
+//target overlays width/height
+int *g_hSize = NULL;
 
+//FUCTURE. store players for map
 std::vector<Entity> EntityList;
 
-Entity entPleasantValley("Pleasant Valley", Vector3(-129.0f, 40.0f, -1146.0f));
-Entity entCranberry("Cranberry", Vector3(-1233.0f, 90.0f, 1855.0f));
-Entity entRanchito("Ranchito", Vector3(2003.0f, 50.0f, 2221.0f));
+/*** EXTERN VARIABLE DEC FROM SDK.H ***
+**************************************/
+bool ShowCities = true;
+bool ShowBorderBox = true;
+bool ShowAnimals = true;
+bool ShowPlayers = true;
+bool ShowAggressive = true;
+bool ShowDead = true;
+bool ShowItems = true;
+bool ShowContainers = true;
+/*************************************/
 
+/*** Functions Declarations ***
+******************************/
 void DrawTowns(Entity LocalEntity);
 void DrawPlayerLocation(Entity LocalEntity);
 
-//Debug
+//Debug Functions
 void DrawEntityLocation(Entity ent, Vector3 vBot);
 void DrawFunTime(); //used for testing/adding in new Renderer functions
 
 void KeyLoggerThread();
+/*** End Functions Declarations ***
+**********************************/
 
 void H1Z1ProcessOverlay() {
 
@@ -256,12 +271,16 @@ void H1Z1ProcessOverlay() {
 			}
 
 		} //end if ent = 0
-		DrawTowns(LocalEntity);
+		if (ShowCities) { DrawTowns(LocalEntity); }
+
 		dwEntity = process->Read<DWORD_PTR>(dwEntity + 0x400L);
 	} //end for entity
 	//std::cout << "processed: " << cntEntProcessed << " of " << entityCount << std::endl;
 }
 
+Entity entPleasantValley("Pleasant Valley", Vector3(-129.0f, 40.0f, -1146.0f));
+Entity entCranberry("Cranberry", Vector3(-1233.0f, 90.0f, 1855.0f));
+Entity entRanchito("Ranchito", Vector3(2003.0f, 50.0f, 2221.0f));
 // Meeh........
 void DrawTowns(Entity LocalEntity) {
 	Vector3 pBot;
@@ -342,7 +361,7 @@ int main()
 	char * value = "Untitled - Notepad";
 	HWND newhwnd = FindWindow(NULL, value);
 
-	bool pCheck = process->Attach("H1Z1.exe"); // "H1Z1.exe"
+	//bool pCheck = process->Attach("H1Z1.exe"); // "H1Z1.exe"
 	bool oCheck = gOverlay->Attach(newhwnd);
 	gRenderer->OnSetup(gOverlay->GetDevice());
 
@@ -356,13 +375,24 @@ int main()
 	gOverlay->AddOnFrame(OnFrame);
 	gOverlay->OnFrame();
 	//getchar(); //debug hold for viewing
+
+	keyThread.join();
 	return 1;
 }
-
+int xx = 10;
 void DrawFunTime() {
-	gRenderer->DrawRect(100, 100, 30, 60, Color::Red());
+	gRenderer->DrawRect(xx, 100, 30, 60, Color::Red());
+	char s[32]; memset(s, NULL, sizeof(char[32]));
+	sprintf(s, "%i", ShowCities);
+	gRenderer->DrawString(100, 400, Color::Blue(),  s);
+	if (xx < 400) { xx = xx + 5; }
+	else { xx = 0; }
+	if (ShowCities) {
+		gRenderer->DrawRect(300 + ShowCities*200, 300, 20, 20, Color::Green());
+	}
 }
 
+//thread for KeyHook to run
 void KeyLoggerThread() {
 	KeyHook mykey;
 	mykey.Init();

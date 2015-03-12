@@ -15,6 +15,7 @@ KeyHook::~KeyHook()
 
 void KeyHook::Init() {
 	m_keyHook = SetWindowsHookEx(WH_KEYBOARD_LL, LowLevelKeyboardProc, NULL, NULL);
+	ShowCities = true;
 }
 
 void KeyHook::DoIt() {
@@ -29,25 +30,22 @@ void KeyHook::DoIt() {
 LRESULT CALLBACK LowLevelKeyboardProc(int nCode, WPARAM wParam, LPARAM lParam) {
 
 	PKBDLLHOOKSTRUCT keyp = (PKBDLLHOOKSTRUCT)lParam;
-	switch (wParam) {
-	case WM_KEYUP:
-		switch (keyp->vkCode) {
-		case 0x70: //f1
-			std::cout << "f1" << std::endl;
-			break;
-		case 0x71: //f2
-			std::cout << "f2" << std::endl;
-			break;
-		default:
-			std::cout << "other" << std::endl;
-		}
-		break;
-	case WM_KEYDOWN:
-		std::cout << "down" << std::endl;
-		break;
+	if (nCode == HC_ACTION) {
+		switch (wParam) {
+		case WM_SYSKEYUP:
+			if (keyp->vkCode == VK_F1 && keyp->flags & LLKHF_ALTDOWN) {
+				std::cout << "alt f1" << std::endl;
+				ShowCities = !ShowCities;
+				std::cout << ShowCities << std::endl;
+			}
+			else if (keyp->vkCode == VK_F2 && keyp->flags & LLKHF_ALTDOWN) {
+				std::cout << "alt f2" << std::endl;
+			}
 
-	default:
-		break;
+		default:
+			break;
+		}
 	}
+
 	return CallNextHookEx(m_keyHook, nCode, wParam, lParam); //send me the next Message so that we do not cause Error 
 }

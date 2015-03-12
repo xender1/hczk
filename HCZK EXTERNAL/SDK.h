@@ -29,13 +29,13 @@ enum Graphics_t {
 	GRAPHICS_MATRIX = 0x1A0L
 };
 
-static bool ShowBorderBox = true;
-static bool ShowAnimals = true;
-static bool ShowPlayers = true;
-static bool ShowAggressive = true;
-static bool ShowDead = true; //not implented yet
-static bool ShowItems = true;
-static bool ShowContainers = true;
-static bool ShowCities = true;
+extern bool ShowCities;
+extern bool ShowBorderBox;
+extern bool ShowAnimals;
+extern bool ShowPlayers;
+extern bool ShowAggressive;
+extern bool ShowDead;
+extern bool ShowItems;
+extern bool ShowContainers;
 
 #endif // SDK_H
