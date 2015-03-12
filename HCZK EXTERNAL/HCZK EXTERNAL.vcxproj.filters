@@ -28,6 +28,9 @@
     <Filter Include="Overlay">
       <UniqueIdentifier>{1e403ec1-4300-4e57-bc8a-053b312cdee0}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Keyboard">
+      <UniqueIdentifier>{e62a8472-c74e-46d8-93ac-dd92321de4e9}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -50,6 +53,9 @@
     </ClCompile>
     <ClCompile Include="Entity.cpp">
       <Filter>H1Z1</Filter>
+    </ClCompile>
+    <ClCompile Include="KeyHook.cpp">
+      <Filter>Keyboard</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -85,6 +91,9 @@
     </ClInclude>
     <ClInclude Include="Main.h">
       <Filter>Include</Filter>
+    </ClInclude>
+    <ClInclude Include="KeyHook.h">
+      <Filter>Keyboard</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

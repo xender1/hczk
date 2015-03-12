@@ -7,6 +7,11 @@ Entity::Entity() {
 	Clear();
 }
 
+Entity::Entity(const char* name, Vector3 location) {
+	m_vLocation = Vector3(location.x, location.y, location.z);
+	sprintf(m_pName, name);
+}
+
 Entity::~Entity() {
 
 }

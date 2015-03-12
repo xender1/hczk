@@ -8,6 +8,7 @@
 class Entity {
 public:
 	Entity();
+	Entity(const char* name, Vector3 location); //for setting up static locations to display (towns)
 	~Entity();
 
 	void		UpdateLocal(DWORD_PTR dwPointer); //initialize self (id,name,x,y,z,d)

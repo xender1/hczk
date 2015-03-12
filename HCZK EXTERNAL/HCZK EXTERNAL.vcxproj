@@ -84,6 +84,7 @@
   <ItemGroup>
     <ClCompile Include="Engine.cpp" />
     <ClCompile Include="Entity.cpp" />
+    <ClCompile Include="KeyHook.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Module.cpp" />
     <ClCompile Include="Overlay.cpp" />
@@ -95,6 +96,7 @@
     <ClInclude Include="Direct3D.h" />
     <ClInclude Include="Engine.h" />
     <ClInclude Include="Entity.h" />
+    <ClInclude Include="KeyHook.h" />
     <ClInclude Include="Main.h" />
     <ClInclude Include="Math.h" />
     <ClInclude Include="Module.h" />

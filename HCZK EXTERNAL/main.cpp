@@ -9,19 +9,13 @@
 #include "Engine.h"
 #include "Entity.h"
 
+#include <thread>
+#include "KeyHook.h"
+
 #include "SDK.h"
 
 #define XDRAW_OFFSET 35 //needs to be off text length
 #define YDRAW_OFFSET 22
-
-bool ShowBorderBox = true;
-bool ShowAnimals = true;
-bool ShowPlayers = true;
-bool ShowAggressive = true;
-bool ShowDead = true; //not implented yet
-bool ShowItems = true;
-bool ShowContainers = true;
-bool ShowCities = true;
 
 Overlay* gOverlay = new Overlay();
 Renderer* gRenderer = new Renderer();
@@ -30,12 +24,18 @@ int *g_hSize = gOverlay->getSize();
 
 std::vector<Entity> EntityList;
 
-void DrawTowns();
+Entity entPleasantValley("Pleasant Valley", Vector3(-129.0f, 40.0f, -1146.0f));
+Entity entCranberry("Cranberry", Vector3(-1233.0f, 90.0f, 1855.0f));
+Entity entRanchito("Ranchito", Vector3(2003.0f, 50.0f, 2221.0f));
+
+void DrawTowns(Entity LocalEntity);
 void DrawPlayerLocation(Entity LocalEntity);
 
 //Debug
 void DrawEntityLocation(Entity ent, Vector3 vBot);
 void DrawFunTime(); //used for testing/adding in new Renderer functions
+
+void KeyLoggerThread();
 
 void H1Z1ProcessOverlay() {
 
@@ -256,30 +256,29 @@ void H1Z1ProcessOverlay() {
 			}
 
 		} //end if ent = 0
-		DrawTowns();
+		DrawTowns(LocalEntity);
 		dwEntity = process->Read<DWORD_PTR>(dwEntity + 0x400L);
 	} //end for entity
 	//std::cout << "processed: " << cntEntProcessed << " of " << entityCount << std::endl;
 }
 
 // Meeh........
-void DrawTowns() {
-	Vector3 pValleyVect(-129.0f, 40.0f, -1146.0f);
-	Vector3 cranVect(-1233.0f, 90.0f, 1855.0f);
-	Vector3 ranchVect(2003.0f, 50.0f, 2221.0f);
-
+void DrawTowns(Entity LocalEntity) {
 	Vector3 pBot;
 	Vector3 cBot;
 	Vector3 rBot;
 
-	if (g_pEngine->WorldToScreen(pValleyVect, pBot)) {
-		gRenderer->DrawString(pBot.x, pBot.y - 10, Color::Black(), "Pleasant Valley");
+	if (g_pEngine->WorldToScreen(entPleasantValley.GetLocation(), pBot)) {
+		entPleasantValley.SetDistanceFrom(LocalEntity.GetLocation());
+		gRenderer->DrawString(pBot.x, pBot.y - 10, Color::Black(), entPleasantValley.GetDisplayText());
 	}
-	if (g_pEngine->WorldToScreen(cranVect, cBot)) {
-		gRenderer->DrawString(cBot.x, cBot.y - 10, Color::Black(), "Cranberry");
+	if (g_pEngine->WorldToScreen(entCranberry.GetLocation(), cBot)) {
+		entCranberry.SetDistanceFrom(LocalEntity.GetLocation());
+		gRenderer->DrawString(cBot.x, cBot.y - 10, Color::Black(), entCranberry.GetDisplayText());
 	}
-	if (g_pEngine->WorldToScreen(ranchVect, rBot)) {
-		gRenderer->DrawString(rBot.x, rBot.y - 10, Color::Black(), "Ranchito");
+	if (g_pEngine->WorldToScreen(entRanchito.GetLocation(), rBot)) {
+		entRanchito.SetDistanceFrom(LocalEntity.GetLocation());
+		gRenderer->DrawString(rBot.x, rBot.y - 10, Color::Black(), entRanchito.GetDisplayText());
 	}
 }
 
@@ -325,8 +324,8 @@ void DrawEntityLocation(Entity ent, Vector3 vBot) {
 
 void OnFrame() {
 	gRenderer->PreFrame();
-	H1Z1ProcessOverlay();
-	//DrawFunTime();
+	//H1Z1ProcessOverlay();
+	DrawFunTime();
 	gRenderer->PostFrame();
 }
 
@@ -351,6 +350,9 @@ int main()
 	g_pEngine->m_ScreenSize = g_hSize;
 	std::cout << " x: " << g_hSize[0] << "  y: " << g_hSize[1] << std::endl;
 
+	//start key logger for catching alt commands for display options
+	std::thread keyThread(KeyLoggerThread);
+
 	gOverlay->AddOnFrame(OnFrame);
 	gOverlay->OnFrame();
 	//getchar(); //debug hold for viewing
@@ -361,3 +363,8 @@ void DrawFunTime() {
 	gRenderer->DrawRect(100, 100, 30, 60, Color::Red());
 }
 
+void KeyLoggerThread() {
+	KeyHook mykey;
+	mykey.Init();
+	mykey.DoIt();
+}
