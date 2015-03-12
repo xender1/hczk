@@ -34,6 +34,8 @@ extern bool ShowBorderBox;
 extern bool ShowAnimals;
 extern bool ShowPlayers;
 extern bool ShowAggressive;
+extern bool ShowWepAmmo;
+
 extern bool ShowDead;
 extern bool ShowItems;
 extern bool ShowContainers;

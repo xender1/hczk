@@ -27,17 +27,19 @@ int *g_hSize = NULL;
 //FUCTURE. store players for map
 std::vector<Entity> EntityList;
 
-/*** EXTERN VARIABLE DEC FROM SDK.H ***
-**************************************/
-bool ShowCities = true;
-bool ShowBorderBox = true;
-bool ShowAnimals = true;
-bool ShowPlayers = true;
-bool ShowAggressive = true;
-bool ShowDead = true;
-bool ShowItems = true;
-bool ShowContainers = true;
-/*************************************/
+/*** EXT VARIABLE DECL FROM SDK.H ***
+************************************/
+bool ShowCities			= true;
+bool ShowBorderBox		= true;
+bool ShowAnimals		= true;
+bool ShowPlayers		= true;
+bool ShowAggressive		= true;
+bool ShowWepAmmo		= true;
+bool ShowItems			= true;
+
+bool ShowDead			= true;
+bool ShowContainers		= true;
+/***********************************/
 
 /*** Functions Declarations ***
 ******************************/
@@ -98,36 +100,40 @@ void H1Z1ProcessOverlay() {
 						ent.SetDistanceFrom(LocalEntity.GetLocation());
 
 						if (ent.GetId() == 0x13 || ent.GetId() == 0x55) { //deer or rabbit
-							gRenderer->DrawString(vBot.x - XDRAW_OFFSET, vBot.y + YDRAW_OFFSET, Color::LightBrown(), ent.GetDisplayText());
+							if (ShowAnimals) { gRenderer->DrawString(vBot.x - XDRAW_OFFSET, vBot.y + YDRAW_OFFSET, Color::LightBrown(), ent.GetDisplayText()); }
 						}
 						else if (ent.GetId() == 0x04) { // Player 0x04,  this also gets Stash/Campfire - could filter out / color
-							gRenderer->DrawString(vBot.x - XDRAW_OFFSET, vBot.y + YDRAW_OFFSET, Color::Red(), ent.GetDisplayText());
+							if (ShowPlayers) { gRenderer->DrawString(vBot.x - XDRAW_OFFSET, vBot.y + YDRAW_OFFSET, Color::Red(), ent.GetDisplayText()); }
 						}
 						else { //Wolf, Bear, Zombies
-							gRenderer->DrawString(vBot.x - XDRAW_OFFSET, vBot.y + YDRAW_OFFSET, Color::DarkRed(), ent.GetDisplayText());
+							if (ShowAggressive) { gRenderer->DrawString(vBot.x - XDRAW_OFFSET, vBot.y + YDRAW_OFFSET, Color::DarkRed(), ent.GetDisplayText()); }
 						}
 						
 						// Draws the BorderBox
-						vHead = ent.GetLocation() + Vector3(0, 1.8, 0);
-						if (g_pEngine->WorldToScreen(vHead, vTop)) {		
-							float h = vBot.y - vTop.y;
-							float w = h / 5.0f;
-							gRenderer->DrawBorderBoxOut(vTop.x - w, vTop.y + YDRAW_OFFSET, w * 2, h, 1, Color::Cyan(), Color::Black());
-						}
+						if (ShowBorderBox) {
+							vHead = ent.GetLocation() + Vector3(0, 1.8, 0);
+							if (g_pEngine->WorldToScreen(vHead, vTop)) {
+								float h = vBot.y - vTop.y;
+								float w = h / 5.0f;
+								gRenderer->DrawBorderBoxOut(vTop.x - w, vTop.y + YDRAW_OFFSET, w * 2, h, 1, Color::Cyan(), Color::Black());
+							}
+						} //endif ShowBorderBox
 						//DrawEntityLocation(ent, vBot);//debug function
 					}
 
-				}
+				} //endif process->Read
 				break;
 
 			case 0x2E/*Loot*/:
-				ent.UpdateLoot();
-				vFeet = ent.GetLocation();
+				if (ShowItems) {
+					ent.UpdateLoot();
+					vFeet = ent.GetLocation();
 
-				if (g_pEngine->WorldToScreen(vFeet, vBot)) {
-					ent.SetDistanceFrom(LocalEntity.GetLocation());
+					if (g_pEngine->WorldToScreen(vFeet, vBot)) {
+						ent.SetDistanceFrom(LocalEntity.GetLocation());
 
-					gRenderer->DrawString(vBot.x - XDRAW_OFFSET, vBot.y + YDRAW_OFFSET, Color::Yellow(), ent.GetDisplayText());
+						gRenderer->DrawString(vBot.x - XDRAW_OFFSET, vBot.y + YDRAW_OFFSET, Color::Yellow(), ent.GetDisplayText());
+					}
 				}
 				break;
 
@@ -151,24 +157,16 @@ void H1Z1ProcessOverlay() {
 				break;
 
 			case 0x15/*Ammo*/:
-				ent.UpdateLoot();
-				vFeet = ent.GetLocation();
-
-				if (g_pEngine->WorldToScreen(vFeet, vBot)) {
-					ent.SetDistanceFrom(LocalEntity.GetLocation());
-
-					gRenderer->DrawString(vBot.x - XDRAW_OFFSET, vBot.y + YDRAW_OFFSET, Color::Pink(), ent.GetDisplayText());
-				}
-				break;
-
 			case 0x34/*Weapons*/:
-				ent.UpdateLoot();
-				vFeet = ent.GetLocation();
+				if (ShowWepAmmo) {
+					ent.UpdateLoot();
+					vFeet = ent.GetLocation();
 
-				if (g_pEngine->WorldToScreen(vFeet, vBot)) {
-					ent.SetDistanceFrom(LocalEntity.GetLocation());
+					if (g_pEngine->WorldToScreen(vFeet, vBot)) {
+						ent.SetDistanceFrom(LocalEntity.GetLocation());
 
-					gRenderer->DrawString(vBot.x - XDRAW_OFFSET, vBot.y + YDRAW_OFFSET, Color::Pink(), ent.GetDisplayText());
+						gRenderer->DrawString(vBot.x - XDRAW_OFFSET, vBot.y + YDRAW_OFFSET, Color::Pink(), ent.GetDisplayText());
+					}
 				}
 				break;
 
@@ -186,13 +184,15 @@ void H1Z1ProcessOverlay() {
 				break;
 
 			case 0x2C/* Any Car Part (Battary, Turbo, Sparkplugs)*/:
-				ent.UpdateLoot();
-				vFeet = ent.GetLocation();
+				if (ShowItems) {
+					ent.UpdateLoot();
+					vFeet = ent.GetLocation();
 
-				if (g_pEngine->WorldToScreen(vFeet, vBot)) {
-					ent.SetDistanceFrom(LocalEntity.GetLocation());
+					if (g_pEngine->WorldToScreen(vFeet, vBot)) {
+						ent.SetDistanceFrom(LocalEntity.GetLocation());
 
-					gRenderer->DrawString(vBot.x - XDRAW_OFFSET, vBot.y + YDRAW_OFFSET, Color::White(), ent.GetDisplayText());
+						gRenderer->DrawString(vBot.x - XDRAW_OFFSET, vBot.y + YDRAW_OFFSET, Color::White(), ent.GetDisplayText());
+					}
 				}
 				break;
 
@@ -259,16 +259,18 @@ void H1Z1ProcessOverlay() {
 
 				// UNKNOWN ITEMS //
 			default:
-				ent.UpdateLoot();
-				vFeet = ent.GetLocation();
+				if (ShowItems) {
+					ent.UpdateLoot();
+					vFeet = ent.GetLocation();
 
-				if (g_pEngine->WorldToScreen(vFeet, vBot)) {
-					ent.SetDistanceFrom(LocalEntity.GetLocation());
+					if (g_pEngine->WorldToScreen(vFeet, vBot)) {
+						ent.SetDistanceFrom(LocalEntity.GetLocation());
 
-					gRenderer->DrawString(vBot.x - XDRAW_OFFSET, vBot.y + YDRAW_OFFSET, Color::Cyan(), ent.GetDisplayText());
+						gRenderer->DrawString(vBot.x - XDRAW_OFFSET, vBot.y + YDRAW_OFFSET, Color::Cyan(), ent.GetDisplayText());
+					}
 				}
 				break;
-			}
+			} //end switch(ent.GetId()
 
 		} //end if ent = 0
 		if (ShowCities) { DrawTowns(LocalEntity); }
@@ -343,8 +345,8 @@ void DrawEntityLocation(Entity ent, Vector3 vBot) {
 
 void OnFrame() {
 	gRenderer->PreFrame();
-	//H1Z1ProcessOverlay();
-	DrawFunTime();
+	H1Z1ProcessOverlay();
+	//DrawFunTime();
 	gRenderer->PostFrame();
 }
 
@@ -361,7 +363,7 @@ int main()
 	char * value = "Untitled - Notepad";
 	HWND newhwnd = FindWindow(NULL, value);
 
-	//bool pCheck = process->Attach("H1Z1.exe"); // "H1Z1.exe"
+	bool pCheck = process->Attach("H1Z1.exe"); // "H1Z1.exe"
 	bool oCheck = gOverlay->Attach(newhwnd);
 	gRenderer->OnSetup(gOverlay->GetDevice());
 
@@ -379,10 +381,11 @@ int main()
 	keyThread.join();
 	return 1;
 }
+
 int xx = 10;
 void DrawFunTime() {
 	gRenderer->DrawRect(xx, 100, 30, 60, Color::Red());
-	char s[32]; memset(s, NULL, sizeof(char[32]));
+	char s[4]; memset(s, NULL, sizeof(char[4]));
 	sprintf(s, "%i", ShowCities);
 	gRenderer->DrawString(100, 400, Color::Blue(),  s);
 	if (xx < 400) { xx = xx + 5; }
