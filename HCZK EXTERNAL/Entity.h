@@ -28,6 +28,7 @@ public:
 	Vector3		GetLocation();
 	const char*	GetName();
 	int			GetId();
+	unsigned int GetHealth();
 
 	int			GetDist(); //dist from player
 	float		GetDir(); //set for local player only
@@ -42,6 +43,8 @@ private:
 
 	char		m_pName[32];
 	char		m_pDisplayText[64];
+
+	unsigned int m_uiHealth;
 
 	Vector3		m_vLocation;
 	float		m_fX;

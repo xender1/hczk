@@ -18,4 +18,4 @@
 #pragma comment(lib, "dinput8.lib")
 #pragma comment(lib, "dxguid.lib")
 
-#endif // DIRECT3D_H
+#endif // DIRECT3D_H 

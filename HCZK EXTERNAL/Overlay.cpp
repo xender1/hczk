@@ -29,7 +29,7 @@ int Overlay::OnFrame() {
 
 	while (TRUE)
 	{
-
+		 
 		if (!FindWindow(NULL, "Untitled - Notepad"))
 			ExitProcess(0);
 

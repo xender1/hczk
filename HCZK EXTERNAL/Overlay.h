@@ -35,7 +35,7 @@ public:
 
 private:
 	void					Render();
-
+ 
 	void					UpdateWindowPos();
 
 private:

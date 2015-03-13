@@ -24,4 +24,4 @@ const std::string& Module::GetName() const {
 
 const std::string& Module::GetPath() const {
 	return m_ImagePath;
-}
+} 

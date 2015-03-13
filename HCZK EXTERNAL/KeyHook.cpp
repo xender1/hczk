@@ -48,7 +48,7 @@ LRESULT CALLBACK LowLevelKeyboardProc(int nCode, WPARAM wParam, LPARAM lParam) {
 			else if (keyp->vkCode == VK_F6 && keyp->flags & LLKHF_ALTDOWN) {
 				ShowBorderBox = !ShowBorderBox;
 			}
-
+ 
 		default:
 			break;
 		}

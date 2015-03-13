@@ -13,7 +13,7 @@ struct Vertex_t {
 		FVF = D3DFVF_XYZRHW | D3DFVF_DIFFUSE
 	};
 };
-
+ 
 class Renderer
 {
 public:

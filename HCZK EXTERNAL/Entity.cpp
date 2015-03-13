@@ -44,7 +44,16 @@ void Entity::UpdateEnemy() {
 		m_fY = process->Read<float>(m_dwPointer + 0x1364);
 		m_fZ = process->Read<float>(m_dwPointer + 0x418);
 	}
-	
+
+	//gets health
+	DWORD_PTR num22 = process->Read<DWORD_PTR>(m_dwPointer + 0x4068L);
+	unsigned int num23 = process->Read<unsigned int>(num22);
+	for (unsigned int j = 1; (num23 != 0x30) && (j < 50); j++) {
+		num22 = process->Read<DWORD_PTR>(num22 + 0xF8L);
+		num23 = process->Read<unsigned int>(num22);
+	}
+	m_uiHealth = process->Read<unsigned int>(num22 + 0xB0L) / 100;
+
 	m_vLocation = Vector3(m_fX, m_fY, m_fZ);
 }
 
@@ -66,9 +75,9 @@ void Entity::UpdateLoot() {
 }
 
 void Entity::UpdateCars() {
-	m_fX = process->Read<float>(m_dwPointer + 0x250);
-	m_fY = process->Read<float>(m_dwPointer + 0x254);
-	m_fZ = process->Read<float>(m_dwPointer + 0x258);
+	m_fX = process->Read<float>(m_dwPointer + 0x13F0);
+	m_fY = process->Read<float>(m_dwPointer + 0x13F4);
+	m_fZ = process->Read<float>(m_dwPointer + 0x13F8);
 
 	m_vLocation = Vector3(m_fX, m_fY, m_fZ);
 }
@@ -124,11 +133,17 @@ float Entity::GetDir() {
 	return m_fDir;
 }
 
+unsigned int Entity::GetHealth() {
+	return m_uiHealth;
+}
+
 void Entity::Clear() {
 	m_dwPointer = NULL;
 
 	m_vLocation = Vector3(0, 0, 0);
 	m_iId = NULL;
+
+	m_uiHealth = NULL;
 
 	m_fX = 0.0f;
 	m_fY = 0.0f;

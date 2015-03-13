@@ -42,6 +42,7 @@ public:
 	static Color Cyan() { return Color(0, 128, 255); }
 	static Color Yellow() { return Color(255, 255, 0); }
 	static Color Pink() { return Color(242, 12, 223); }
+	static Color DarkPink() { return Color{ 133, 42, 130); }
 	static Color LightBrown() { return Color(168, 66, 35); }
 	static Color DarkGreen() { return Color(31, 143, 31); }
 

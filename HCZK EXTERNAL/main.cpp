@@ -24,7 +24,7 @@ Renderer* gRenderer = new Renderer();
 //target overlays width/height
 int *g_hSize = NULL;
 
-//FUCTURE. store players for map
+//FUTURE. store players for map
 std::vector<Entity> EntityList;
 
 /*** EXT VARIABLE DECL FROM SDK.H ***
@@ -36,6 +36,7 @@ bool ShowPlayers		= true;
 bool ShowAggressive		= true;
 bool ShowWepAmmo		= true;
 bool ShowItems			= true;
+bool ShowDisplaySettings = false;
 
 bool ShowDead			= true;
 bool ShowContainers		= true;
@@ -100,7 +101,7 @@ void H1Z1ProcessOverlay() {
 					else if (ent.GetId() == 0x04) { //enemy
 						ent.UpdateEnemy();
 					}
-					else {
+					else { //wolf bear zombie
 						ent.UpdateNPC();
 					}
 					//ent.UpdateNPC();
@@ -114,6 +115,12 @@ void H1Z1ProcessOverlay() {
 						}
 						else if (ent.GetId() == 0x04) { // Player 0x04,  this also gets Stash/Campfire - could filter out / color
 							if (ShowPlayers) { gRenderer->DrawString(vBot.x - XDRAW_OFFSET, vBot.y + YDRAW_OFFSET, Color::Red(), ent.GetDisplayText()); }
+							if (ShowPlayers) {
+								std::string s = "%%";
+								char ehp[12]; memset(ehp, NULL, sizeof(char[12]));
+								sprintf(ehp, "%i%s", ent.GetHealth(), s.c_str());
+								gRenderer->DrawString(vBot.x - XDRAW_OFFSET + 5, vBot.y + YDRAW_OFFSET - 10, Color::Red(), ehp);
+							}
 						}
 						else { //Wolf, Bear, Zombies
 							if (ShowAggressive) { gRenderer->DrawString(vBot.x - XDRAW_OFFSET, vBot.y + YDRAW_OFFSET, Color::DarkRed(), ent.GetDisplayText()); }

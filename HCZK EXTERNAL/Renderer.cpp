@@ -52,7 +52,7 @@ void Renderer::DrawString(int x, int y, Color color, const char* text) {
 
 	m_mFont->DrawText(NULL, buf, -1, &FontPos, DT_NOCLIP, color.Code());
 }
-
+ 
 void Renderer::CreateFont(int h, int w, char* font) {
 	LPD3DXFONT tFont;
 	D3DXCreateFont(m_pDevice, 50, 0, FW_BOLD, 1, 0, DEFAULT_CHARSET, OUT_DEFAULT_PRECIS, DEFAULT_QUALITY, DEFAULT_PITCH | FF_DONTCARE, font, &tFont);

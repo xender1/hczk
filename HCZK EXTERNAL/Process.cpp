@@ -125,7 +125,7 @@ bool Process::DumpModList() {
 	if (!Module32First(hSnapshot, &Entry)) {
 		CloseHandle(hSnapshot);
 		return false;
-	}
+	} 
 
 	Module* pMod = nullptr;
 

@@ -33,7 +33,7 @@ public:
 	template<typename T>
 	T Read(DWORD_PTR dwAddress, const T& tDefault = T()) {
 		T tRet;
-
+		 
 		if (!Read(dwAddress, &tRet, sizeof(T))) {
 			return tDefault;
 		}
