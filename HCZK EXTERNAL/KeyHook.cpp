@@ -34,12 +34,19 @@ LRESULT CALLBACK LowLevelKeyboardProc(int nCode, WPARAM wParam, LPARAM lParam) {
 		switch (wParam) {
 		case WM_SYSKEYUP:
 			if (keyp->vkCode == VK_F1 && keyp->flags & LLKHF_ALTDOWN) {
-				std::cout << "alt f1" << std::endl;
-				ShowCities = !ShowCities;
-				std::cout << ShowCities << std::endl;
+				ShowItems = !ShowItems;
 			}
 			else if (keyp->vkCode == VK_F2 && keyp->flags & LLKHF_ALTDOWN) {
-				std::cout << "alt f2" << std::endl;
+				ShowAnimals = !ShowAnimals;
+			}
+			else if (keyp->vkCode == VK_F3 && keyp->flags & LLKHF_ALTDOWN) {
+				ShowAggressive = !ShowAggressive;
+			}
+			else if (keyp->vkCode == VK_F5 && keyp->flags & LLKHF_ALTDOWN) {
+				ShowCities = !ShowCities;
+			}
+			else if (keyp->vkCode == VK_F6 && keyp->flags & LLKHF_ALTDOWN) {
+				ShowBorderBox = !ShowBorderBox;
 			}
 
 		default:

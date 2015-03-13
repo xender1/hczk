@@ -16,8 +16,10 @@ public:
 	void		UpdateId(DWORD_PTR dwPointer);    //standard initializor for non self
 	void		SetName();    //standard initializor for non self
 
-	void		UpdateNPC();					  //initialize enemy,zombie,animal
+	void		UpdateEnemy();					  //initialize enemy
+	void		UpdateNPC();				      //initialize zombie,animal
 	void		UpdateLoot();					  //initialize for all else (guns,ammo,loot,parts,food,...)
+	void		UpdateCars();					  //initialize for offroad, pickup, policecar
 
 	void		SetDistanceFrom(Vector3 vec);
 	const char* GetDisplayText();

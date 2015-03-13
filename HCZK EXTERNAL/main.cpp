@@ -70,7 +70,7 @@ void H1Z1ProcessOverlay() {
 
 	/* Entity For Loop */
 	DWORD_PTR dwEntity;
-	dwEntity = process->Read<DWORD_PTR>(dwFirstEntity + 0x400);
+	dwEntity = process->Read<DWORD_PTR>(dwFirstEntity + 0x410);
 	for (int i = 1; i < entityCount; i++) {
 		Entity ent;
 		ent.UpdateId(dwEntity); // + sets entity id
@@ -81,7 +81,7 @@ void H1Z1ProcessOverlay() {
 			ent.SetName();
 
 			Vector3 vBot; Vector3 vFeet; //for world to screen
-			Vector3 vTop; Vector3 vHead;
+			Vector3 vTop; Vector3 vHead; BYTE EntAlive;
 			switch (ent.GetId())
 			{
 			case 0x04/*Player*/:
@@ -91,9 +91,19 @@ void H1Z1ProcessOverlay() {
 			case 0x50/*Bear*/:
 			case 0x55/*Rabbit*/:
 			case 0x5b/*Zombie catch */:
-				if (process->Read<float>(dwEntity + 0x1CC) == 1.0f)
+				EntAlive = process->Read<BYTE>(ent.GetPointer() + 0x137C);
+				if (EntAlive == 1)
 				{
-					ent.UpdateNPC();
+					if (ent.GetId() == 0x13 || ent.GetId() == 0x55) { //deer or rabbit
+						ent.UpdateNPC();
+					}
+					else if (ent.GetId() == 0x04) { //enemy
+						ent.UpdateEnemy();
+					}
+					else {
+						ent.UpdateNPC();
+					}
+					//ent.UpdateNPC();
 					vFeet = ent.GetLocation();
 
 					if (g_pEngine->WorldToScreen(vFeet, vBot)) {
@@ -119,7 +129,7 @@ void H1Z1ProcessOverlay() {
 							}
 						} //endif ShowBorderBox
 						//DrawEntityLocation(ent, vBot);//debug function
-					}
+					} //endif EntAlive
 
 				} //endif process->Read
 				break;
@@ -146,6 +156,7 @@ void H1Z1ProcessOverlay() {
 
 			case 0x1B/*Campfire*/:
 			case 0x6D/*Stash*/:
+				break;
 			case 0x9C/*Land Mine*/:
 				ent.UpdateLoot();
 				vFeet = ent.GetLocation();
@@ -173,7 +184,7 @@ void H1Z1ProcessOverlay() {
 			case 0x11/*OffRoad*/:
 			case 0x72/*Pickup*/:
 			case 0x76/*PoliceCar*/:
-				ent.UpdateLoot();
+				ent.UpdateCars();
 				vFeet = ent.GetLocation();
 
 				if (g_pEngine->WorldToScreen(vFeet, vBot)) {
@@ -275,7 +286,7 @@ void H1Z1ProcessOverlay() {
 		} //end if ent = 0
 		if (ShowCities) { DrawTowns(LocalEntity); }
 
-		dwEntity = process->Read<DWORD_PTR>(dwEntity + 0x400L);
+		dwEntity = process->Read<DWORD_PTR>(dwEntity + 0x410L);
 	} //end for entity
 	//std::cout << "processed: " << cntEntProcessed << " of " << entityCount << std::endl;
 }
@@ -291,15 +302,15 @@ void DrawTowns(Entity LocalEntity) {
 
 	if (g_pEngine->WorldToScreen(entPleasantValley.GetLocation(), pBot)) {
 		entPleasantValley.SetDistanceFrom(LocalEntity.GetLocation());
-		gRenderer->DrawString(pBot.x, pBot.y - 10, Color::Black(), entPleasantValley.GetDisplayText());
+		gRenderer->DrawString(pBot.x, pBot.y - 10, Color::DarkGreen(), entPleasantValley.GetDisplayText());
 	}
 	if (g_pEngine->WorldToScreen(entCranberry.GetLocation(), cBot)) {
 		entCranberry.SetDistanceFrom(LocalEntity.GetLocation());
-		gRenderer->DrawString(cBot.x, cBot.y - 10, Color::Black(), entCranberry.GetDisplayText());
+		gRenderer->DrawString(cBot.x, cBot.y - 10, Color::DarkGreen(), entCranberry.GetDisplayText());
 	}
 	if (g_pEngine->WorldToScreen(entRanchito.GetLocation(), rBot)) {
 		entRanchito.SetDistanceFrom(LocalEntity.GetLocation());
-		gRenderer->DrawString(rBot.x, rBot.y - 10, Color::Black(), entRanchito.GetDisplayText());
+		gRenderer->DrawString(rBot.x, rBot.y - 10, Color::DarkGreen(), entRanchito.GetDisplayText());
 	}
 }
 
