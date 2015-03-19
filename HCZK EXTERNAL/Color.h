@@ -45,6 +45,7 @@ public:
 	static Color DarkPink() { return Color(133, 42, 130); }
 	static Color LightBrown() { return Color(168, 66, 35); }
 	static Color DarkGreen() { return Color(31, 143, 31); }
+	static Color Orange() { return Color(201, 116, 42); }
 
 private:
 	BYTE		m_r, m_g, m_b, m_a;

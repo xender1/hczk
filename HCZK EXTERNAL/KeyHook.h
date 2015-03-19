@@ -1,3 +1,6 @@
+#ifndef KEYHOOK_H
+#define KEYHOOK_H
+
 #pragma once
 
 #include "Main.h"
@@ -15,4 +18,4 @@ public:
 	void		DoIt();
 };
 
- 
+#endif // KEYHOOK_H 

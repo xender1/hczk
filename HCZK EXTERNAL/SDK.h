@@ -5,8 +5,8 @@
 
 #include "Math.h"
 
-#define GAME_CLIENT_ADDRESS	0x142ADA390
-#define GRAPHICS_ADDRESS	0x142ADA0E8
+#define GAME_CLIENT_ADDRESS	0x142AEC018 
+#define GRAPHICS_ADDRESS	0x142AEBD68
 
 enum Entity_t {
 	ENTITY_ORIGIN = 0x1D0,
@@ -35,10 +35,16 @@ extern bool ShowAnimals;
 extern bool ShowPlayers;
 extern bool ShowAggressive;
 extern bool ShowWepAmmo;
+extern bool ShowItems;
+
+extern bool ShowToggleSettings;
 extern bool ShowDisplaySettings;
 
+extern char* hwndName;
+
+//not implemented yet
 extern bool ShowDead;
-extern bool ShowItems;
 extern bool ShowContainers;
+extern bool BoolReadConfig;
 
 #endif // SDK_H

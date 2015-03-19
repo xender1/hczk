@@ -10,7 +10,9 @@
 #include "Entity.h"
 
 #include <thread>
+#include <vector> //not needed but vs being gay atm
 #include "KeyHook.h"
+#include "IniReader.h"
 
 #include "SDK.h"
 
@@ -23,6 +25,7 @@ Renderer* gRenderer = new Renderer();
 
 //target overlays width/height
 int *g_hSize = NULL;
+char* hwndName;
 
 //FUTURE. store players for map
 std::vector<Entity> EntityList;
@@ -30,30 +33,33 @@ std::vector<Entity> EntityList;
 /*** EXT VARIABLE DECL FROM SDK.H ***
 ************************************/
 bool ShowCities			= true;
-bool ShowBorderBox		= true;
+bool ShowBorderBox		= false;
 bool ShowAnimals		= true;
 bool ShowPlayers		= true;
 bool ShowAggressive		= true;
 bool ShowWepAmmo		= true;
 bool ShowItems			= true;
 bool ShowDisplaySettings = false;
+bool BoolReadConfig		= false;
+bool ShowToggleSettings = true;
 
 bool ShowDead			= true;
 bool ShowContainers		= true;
 /***********************************/
 
 /*** Functions Declarations ***
-******************************/
+************************************/
 void DrawTowns(Entity LocalEntity);
+void DrawDisplaySettings();
 void DrawPlayerLocation(Entity LocalEntity);
 
 //Debug Functions
 void DrawEntityLocation(Entity ent, Vector3 vBot);
 void DrawFunTime(); //used for testing/adding in new Renderer functions
 
+void ReadConfigFile();
 void KeyLoggerThread();
-/*** End Functions Declarations ***
-**********************************/
+/**********************************/
 
 void H1Z1ProcessOverlay() {
 
@@ -292,6 +298,10 @@ void H1Z1ProcessOverlay() {
 
 		} //end if ent = 0
 		if (ShowCities) { DrawTowns(LocalEntity); }
+		if (ShowToggleSettings) {
+			if (ShowDisplaySettings) { DrawDisplaySettings(); }
+		}
+		//if (BoolReadConfig) { ReadConfigFile(); }
 
 		dwEntity = process->Read<DWORD_PTR>(dwEntity + 0x410L);
 	} //end for entity
@@ -375,11 +385,12 @@ void OnFrame() {
 //	int nCmdShow)
 int main()
 {
+	//process->DumpAllProcessNames();
 
-	process->DumpAllProcessNames();
-
-	char * value = "Untitled - Notepad";
-	HWND newhwnd = FindWindow(NULL, value);
+	//reads ini to get certain properties
+	ReadConfigFile();
+	std::cout << hwndName << std::endl;
+	HWND newhwnd = FindWindow(NULL, hwndName);
 
 	bool pCheck = process->Attach("H1Z1.exe"); // "H1Z1.exe"
 	bool oCheck = gOverlay->Attach(newhwnd);
@@ -394,10 +405,11 @@ int main()
 
 	gOverlay->AddOnFrame(OnFrame);
 	gOverlay->OnFrame();
-	//getchar(); //debug hold for viewing
 
 	keyThread.join();
-	return 1;
+	
+	//getchar(); //debug hold for viewing
+	return 1; 
 }
 
 int xx = 10;
@@ -408,8 +420,8 @@ void DrawFunTime() {
 	gRenderer->DrawString(100, 400, Color::Blue(),  s);
 	if (xx < 400) { xx = xx + 5; }
 	else { xx = 0; }
-	if (ShowCities) {
-		gRenderer->DrawRect(300 + ShowCities*200, 300, 20, 20, Color::Green());
+	if (ShowDisplaySettings) {
+		DrawDisplaySettings();
 	}
 }
 
@@ -418,4 +430,66 @@ void KeyLoggerThread() {
 	KeyHook mykey;
 	mykey.Init();
 	mykey.DoIt();
+}
+
+void ReadConfigFile() {
+	CIniReader iniReader(".\\Config.ini");
+	hwndName = iniReader.ReadString("Setting", "Name", "");
+
+	BoolReadConfig = false;
+}
+
+void DrawDisplaySettings() {
+	int x = 100;
+	int y = g_hSize[1] - 800;
+	int line_offset = 15;
+	char disp[4]; memset(disp, NULL, sizeof(char[4]));
+
+	ShowBorderBox ? sprintf(disp, "On") : sprintf(disp, "Off");
+	gRenderer->DrawString(x, y, Color::DarkPink(), "Settings");
+	gRenderer->DrawString(x - 60, y, Color::DarkPink(), "alt+");
+	gRenderer->DrawString(x - 53, y + line_offset, Color::Cyan(), "f1 BorderBox:");
+	gRenderer->DrawString(x + 50, y + line_offset, Color::Cyan(), disp);
+	y = y + line_offset;
+
+	memset(disp, NULL, sizeof(char[4]));
+	ShowItems ? sprintf(disp, "On") : sprintf(disp, "Off");
+	gRenderer->DrawString(x - 53, y + line_offset, Color::White(), "f2 Items:");
+	gRenderer->DrawString(x + 50, y + line_offset, Color::White(), disp);
+	y = y + line_offset;
+
+	memset(disp, NULL, sizeof(char[4]));
+	ShowAnimals ? sprintf(disp, "On") : sprintf(disp, "Off");
+	gRenderer->DrawString(x - 53, y + line_offset, Color::Orange(), "f3 Animals:");
+	gRenderer->DrawString(x + 50, y + line_offset, Color::Orange(), disp);
+	y = y + line_offset;
+
+	memset(disp, NULL, sizeof(char[4]));
+	ShowAggressive ? sprintf(disp, "On") : sprintf(disp, "Off");
+	gRenderer->DrawString(x - 53, y + line_offset, Color::DarkRed(), "f5 Aggressive:");
+	gRenderer->DrawString(x + 50, y + line_offset, Color::DarkRed(), disp);
+	y = y + line_offset;
+
+	memset(disp, NULL, sizeof(char[4]));
+	ShowWepAmmo ? sprintf(disp, "On") : sprintf(disp, "Off");
+	gRenderer->DrawString(x - 53, y + line_offset, Color::Pink(), "f6 WepAmmo:");
+	gRenderer->DrawString(x + 50, y + line_offset, Color::Pink(), disp);
+	y = y + line_offset;
+
+	memset(disp, NULL, sizeof(char[4]));
+	ShowPlayers ? sprintf(disp, "On") : sprintf(disp, "Off");
+	gRenderer->DrawString(x - 53, y + line_offset, Color::Red(), "f7 Players:");
+	gRenderer->DrawString(x + 50, y + line_offset, Color::Red(), disp);
+	y = y + line_offset;
+
+	memset(disp, NULL, sizeof(char[4]));
+	ShowCities ? sprintf(disp, "On") : sprintf(disp, "Off");
+	gRenderer->DrawString(x - 53, y + line_offset, Color::DarkGreen(), "f8 Cities:");
+	gRenderer->DrawString(x + 50, y + line_offset, Color::DarkGreen(), disp);
+	y = y + line_offset;
+
+	memset(disp, NULL, sizeof(char[4]));
+	ShowToggleSettings ? sprintf(disp, "On") : sprintf(disp, "Off");
+	gRenderer->DrawString(x - 53, y + line_offset, Color::DarkPink(), "f9 Settings:");
+	gRenderer->DrawString(x + 50, y + line_offset, Color::DarkPink(), disp);
 }

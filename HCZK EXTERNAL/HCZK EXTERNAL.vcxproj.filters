@@ -31,6 +31,9 @@
     <Filter Include="Keyboard">
       <UniqueIdentifier>{e62a8472-c74e-46d8-93ac-dd92321de4e9}</UniqueIdentifier>
     </Filter>
+    <Filter Include="IniReader">
+      <UniqueIdentifier>{91c7f3e5-09ec-4114-beed-7332150a1146}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -56,6 +59,9 @@
     </ClCompile>
     <ClCompile Include="KeyHook.cpp">
       <Filter>Keyboard</Filter>
+    </ClCompile>
+    <ClCompile Include="IniReader.cpp">
+      <Filter>IniReader</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -94,6 +100,9 @@
     </ClInclude>
     <ClInclude Include="KeyHook.h">
       <Filter>Keyboard</Filter>
+    </ClInclude>
+    <ClInclude Include="IniReader.h">
+      <Filter>IniReader</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
