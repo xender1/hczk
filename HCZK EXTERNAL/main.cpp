@@ -75,6 +75,8 @@ void H1Z1ProcessOverlay() {
 	LocalEntity.UpdateLocal(dwFirstEntity);
 	DrawPlayerLocation(LocalEntity);
 
+	//std::cout << "pre loop" << std::endl;
+
 	/* Entity For Loop */
 	DWORD_PTR dwEntity;
 	dwEntity = process->Read<DWORD_PTR>(dwFirstEntity + 0x410);
@@ -97,9 +99,9 @@ void H1Z1ProcessOverlay() {
 			case 0x14/*Wolf*/:
 			case 0x50/*Bear*/:
 			case 0x55/*Rabbit*/:
-			case 0x5b/*Zombie catch */:
+			case 0x5b/*Zombie + ^ catch */:
 				EntAlive = process->Read<BYTE>(ent.GetPointer() + 0x137C);
-				if (EntAlive == 1)
+				if (EntAlive == 1) // + ShowDead option
 				{
 					if (ent.GetId() == 0x13 || ent.GetId() == 0x55) { //deer or rabbit
 						ent.UpdateNPC();
@@ -120,8 +122,8 @@ void H1Z1ProcessOverlay() {
 							if (ShowAnimals) { gRenderer->DrawString(vBot.x - XDRAW_OFFSET, vBot.y + YDRAW_OFFSET, Color::LightBrown(), ent.GetDisplayText()); }
 						}
 						else if (ent.GetId() == 0x04) { // Player 0x04,  this also gets Stash/Campfire - could filter out / color
-							if (ShowPlayers) { gRenderer->DrawString(vBot.x - XDRAW_OFFSET, vBot.y + YDRAW_OFFSET, Color::Red(), ent.GetDisplayText()); }
-							if (ShowPlayers) {
+							if (ShowPlayers) { 
+								gRenderer->DrawString(vBot.x - XDRAW_OFFSET, vBot.y + YDRAW_OFFSET, Color::Red(), ent.GetDisplayText());
 								std::string s = "%%";
 								char ehp[12]; memset(ehp, NULL, sizeof(char[12]));
 								sprintf(ehp, "%i%s", ent.GetHealth(), s.c_str());
@@ -295,6 +297,8 @@ void H1Z1ProcessOverlay() {
 				}
 				break;
 			} //end switch(ent.GetId()
+			
+			//DrawEntityToScreen(ent);
 
 		} //end if ent = 0
 		if (ShowCities) { DrawTowns(LocalEntity); }
@@ -403,6 +407,8 @@ int main()
 	//start key logger for catching alt commands for display options
 	std::thread keyThread(KeyLoggerThread);
 
+	//getchar();
+
 	gOverlay->AddOnFrame(OnFrame);
 	gOverlay->OnFrame();
 
@@ -444,7 +450,7 @@ void DrawDisplaySettings() {
 	int y = g_hSize[1] - 800;
 	int line_offset = 15;
 	char disp[4]; memset(disp, NULL, sizeof(char[4]));
-
+	
 	ShowBorderBox ? sprintf(disp, "On") : sprintf(disp, "Off");
 	gRenderer->DrawString(x, y, Color::DarkPink(), "Settings");
 	gRenderer->DrawString(x - 60, y, Color::DarkPink(), "alt+");

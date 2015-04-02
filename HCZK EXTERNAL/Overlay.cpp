@@ -25,12 +25,12 @@ Overlay::~Overlay() {
 
 int Overlay::OnFrame() {
 	MSG msg;
-	::SetWindowPos(FindWindow(NULL, "Untitled - Notepad"), HWND_NOTOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
+	::SetWindowPos(FindWindow(NULL, hwndName), HWND_NOTOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
 
 	while (TRUE)
 	{
 		 
-		if (!FindWindow(NULL, "Untitled - Notepad"))
+		if (!FindWindow(NULL, hwndName))
 			ExitProcess(0);
 
 		UpdateWindowPos();

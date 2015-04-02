@@ -5,6 +5,7 @@
 
 #include "Main.h"
 #include "Direct3D.h"
+#include "SDK.h"
 
 const MARGINS  margin = { 0, 0, 800, 600 };
 LRESULT CALLBACK WindowProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);

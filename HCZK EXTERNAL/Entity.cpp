@@ -46,13 +46,14 @@ void Entity::UpdateEnemy() {
 	}
 
 	//gets health
-	DWORD_PTR num22 = process->Read<DWORD_PTR>(m_dwPointer + 0x4068L);
+	/*DWORD_PTR num22 = process->Read<DWORD_PTR>(m_dwPointer + 0x4068L);
 	unsigned int num23 = process->Read<unsigned int>(num22);
 	for (unsigned int j = 1; (num23 != 0x30) && (j < 50); j++) {
 		num22 = process->Read<DWORD_PTR>(num22 + 0xF8L);
 		num23 = process->Read<unsigned int>(num22);
 	}
 	m_uiHealth = process->Read<unsigned int>(num22 + 0xB0L) / 100;
+	*/
 
 	m_vLocation = Vector3(m_fX, m_fY, m_fZ);
 }
@@ -75,9 +76,14 @@ void Entity::UpdateLoot() {
 }
 
 void Entity::UpdateCars() {
-	m_fX = process->Read<float>(m_dwPointer + 0x13F0);
-	m_fY = process->Read<float>(m_dwPointer + 0x13F4);
-	m_fZ = process->Read<float>(m_dwPointer + 0x13F8);
+	//m_fX = process->Read<float>(m_dwPointer + 0x13F0);
+	//m_fY = process->Read<float>(m_dwPointer + 0x13F4);
+	//m_fZ = process->Read<float>(m_dwPointer + 0x13F8);
+
+	DWORD_PTR posOffset = process->Read<DWORD_PTR>(m_dwPointer + 0x198);
+	m_fX = process->Read<float>(posOffset + 0x110);
+	m_fY = process->Read<float>(posOffset + 0x114);
+	m_fZ = process->Read<float>(posOffset + 0x118);
 
 	m_vLocation = Vector3(m_fX, m_fY, m_fZ);
 }
