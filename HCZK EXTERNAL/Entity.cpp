@@ -46,14 +46,8 @@ void Entity::UpdateEnemy() {
 	}
 
 	//gets health
-	/*DWORD_PTR num22 = process->Read<DWORD_PTR>(m_dwPointer + 0x4068L);
-	unsigned int num23 = process->Read<unsigned int>(num22);
-	for (unsigned int j = 1; (num23 != 0x30) && (j < 50); j++) {
-		num22 = process->Read<DWORD_PTR>(num22 + 0xF8L);
-		num23 = process->Read<unsigned int>(num22);
-	}
+	DWORD_PTR num22 = process->Read<DWORD_PTR>(m_dwPointer + 0x4068L);
 	m_uiHealth = process->Read<unsigned int>(num22 + 0xB0L) / 100;
-	*/
 
 	m_vLocation = Vector3(m_fX, m_fY, m_fZ);
 }

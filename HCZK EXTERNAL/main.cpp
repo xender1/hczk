@@ -49,6 +49,9 @@ bool ShowContainers		= true;
 
 /*** Functions Declarations ***
 ************************************/
+Entity ProcessEntity();
+void DrawEntityToScreen(Entity ent);
+
 void DrawTowns(Entity LocalEntity);
 void DrawDisplaySettings();
 void DrawPlayerLocation(Entity LocalEntity);
@@ -338,6 +341,7 @@ void DrawTowns(Entity LocalEntity) {
 // Terrible...fix
 void DrawPlayerLocation(Entity LocalEntity) {
 	std::string s = std::to_string(LocalEntity.GetDir());
+
 	char const *retChar = s.c_str();  //use char const* as target type
 	gRenderer->DrawString(50, g_hSize[1] - 400, Color::Green(), "Direction: ");
 	gRenderer->DrawString(125, g_hSize[1] - 400, Color::Green(), retChar);
@@ -498,4 +502,11 @@ void DrawDisplaySettings() {
 	ShowToggleSettings ? sprintf(disp, "On") : sprintf(disp, "Off");
 	gRenderer->DrawString(x - 53, y + line_offset, Color::DarkPink(), "f9 Settings:");
 	gRenderer->DrawString(x + 50, y + line_offset, Color::DarkPink(), disp);
+}
+
+void DrawEntityToScreen(Entity ent) {
+	Vector3 vBot; Vector3 vFeet; //for world to screen
+	switch (ent.GetId()) {
+		
+	}
 }
