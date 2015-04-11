@@ -97,6 +97,7 @@ void H1Z1ProcessOverlay() {
 			switch (ent.GetId())
 			{
 			case 0x04/*Player*/:
+			case 0x05/*BR Player*/:
 			case 0x0C/*Zombie*/:
 			case 0x13/*Deer*/:
 			case 0x14/*Wolf*/:
@@ -109,7 +110,7 @@ void H1Z1ProcessOverlay() {
 					if (ent.GetId() == 0x13 || ent.GetId() == 0x55) { //deer or rabbit
 						ent.UpdateNPC();
 					}
-					else if (ent.GetId() == 0x04) { //enemy
+					else if (ent.GetId() == 0x04 || ent.GetId() == 0x05) { //enemy
 						ent.UpdateEnemy();
 					}
 					else { //wolf bear zombie
@@ -124,7 +125,7 @@ void H1Z1ProcessOverlay() {
 						if (ent.GetId() == 0x13 || ent.GetId() == 0x55) { //deer or rabbit
 							if (ShowAnimals) { gRenderer->DrawString(vBot.x - XDRAW_OFFSET, vBot.y + YDRAW_OFFSET, Color::LightBrown(), ent.GetDisplayText()); }
 						}
-						else if (ent.GetId() == 0x04) { // Player 0x04,  this also gets Stash/Campfire - could filter out / color
+						else if (ent.GetId() == 0x04 || ent.GetId() == 0x05) { // Player 0x04,  this also gets Stash/Campfire - could filter out / color
 							if (ShowPlayers) { 
 								gRenderer->DrawString(vBot.x - XDRAW_OFFSET, vBot.y + YDRAW_OFFSET, Color::Red(), ent.GetDisplayText());
 								std::string s = "%%";
@@ -289,14 +290,14 @@ void H1Z1ProcessOverlay() {
 				// UNKNOWN ITEMS //
 			default:
 				if (ShowItems) {
-					ent.UpdateLoot();
-					vFeet = ent.GetLocation();
+				//	ent.UpdateLoot();
+				//	vFeet = ent.GetLocation();
 
-					if (g_pEngine->WorldToScreen(vFeet, vBot)) {
-						ent.SetDistanceFrom(LocalEntity.GetLocation());
+				//	if (g_pEngine->WorldToScreen(vFeet, vBot)) {
+				//		ent.SetDistanceFrom(LocalEntity.GetLocation());
 
-						gRenderer->DrawString(vBot.x - XDRAW_OFFSET, vBot.y + YDRAW_OFFSET, Color::Cyan(), ent.GetDisplayText());
-					}
+				//		gRenderer->DrawString(vBot.x - XDRAW_OFFSET, vBot.y + YDRAW_OFFSET, Color::Cyan(), ent.GetDisplayText());
+				//	}
 				}
 				break;
 			} //end switch(ent.GetId()
